@@ -1,0 +1,6 @@
+<?php
+require('Benchmark.class.php');
+Benchmark::startTimer();
+echo Benchmark::showTimer(5) . ' sec. ';
+echo Benchmark::showMemory('kb') . ' kb' ;
+?>
