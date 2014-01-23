@@ -296,7 +296,7 @@ EOF;
 		$this->raise(505,
 			'<span style="color:inherit; font-weight:900;">Shutdown with BugCatcher :-(</span><br />', 
 			$exception->getMessage() . ' in '
-			    . str_replace(MNHCC_PATH, 'MNHCC_PATH', $exception->getFile()) . ' on line '
+			    . str_replace(ROOT_PATH, 'ROOT_PATH', $exception->getFile()) . ' on line '
 			    . $exception->getLine()
 		);
 	    }
@@ -516,7 +516,7 @@ EOF;
 	    $html .= static::renderBacktrace($exception->getTrace());
 	    $html .= '          </div>' . n;
 	    $id++;
-	    return str_replace(MNHCC_PATH, 'MNHCC_PATH', $html);
+	    return str_replace(ROOT_PATH, 'ROOT_PATH', $html);
 	}
 
 	public static function renderBacktrace(array $trace) {
