@@ -1,0 +1,9 @@
+[submodule "library/kint"]
+	path = library/kint
+	url = https://github.com/raveren/kint.git
+[submodule "library/firephp-core"]
+	path = library/firephp-core
+	url = https://github.com/firephp/firephp-core.git
+[submodule "library/php-imapp"]
+	path = library/php-imapp
+	url = https://github.com/barbushin/php-imap.git
