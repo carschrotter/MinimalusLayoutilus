@@ -5,7 +5,7 @@ use mnhcc\ml;
 use mnhcc\ml\classes\exception as exception; 
 use mnhcc\ml\classes as classes;{
 
-    if(!defined('APLICATIONNAMESPACE')) define ('APLICATIONNAMESPACE', null);
+    if(!defined('APPLICATIONNAMESPACE')) define ('APPLICATIONNAMESPACE', null);
     
     /**
      *
@@ -21,10 +21,10 @@ use mnhcc\ml\classes as classes;{
          */
         public static function getInstance($instance = 'default') {
            $class = get_called_class();
-           if(APLICATIONNAMESPACE) {
+           if(APPLICATIONNAMESPACE) {
                 $tmp_class = classes\ClassHandler::makeClassName(
                         classes\ClassHandler::cutRootNamespace(get_called_class()),
-                        APLICATIONNAMESPACE);
+                        APPLICATIONNAMESPACE);
                 $class = (classes\Helper::classExists($class, false, true)) ? $tmp_class : $class;
             }
             $reflection = new classes\ReflectionClass($class);

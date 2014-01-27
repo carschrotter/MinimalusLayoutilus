@@ -620,7 +620,6 @@ EOF;
 	 */
 	public static function onTemplateCreated(template\EventParms $eventArgs) {
 	    $template = $eventArgs->getTemplate();
-	    var_dump($template);
 	    if( method_exists($template, 'addStyle') ) {
 		$template->addStyle('error');
 		$template->addStyle('debug');
