@@ -1,40 +1,50 @@
 <?php
 
-namespace mnhcc\ml\traits;
-use mnhcc\ml;
-use mnhcc\ml\classes\exception as exception; 
-use mnhcc\ml\classes as classes;{
+namespace mnhcc\ml\traits {
 
-    if(!defined('APPLICATIONNAMESPACE')) define ('APPLICATIONNAMESPACE', null);
-    
+    use mnhcc\ml\classes\Exception as Exception,
+	mnhcc\ml\classes;
+
     /**
-     *
+     * Implementation for the Instances interface 
+     * <p>
+     * Get a object instance from the class, and automatic overload the classe by the namespace.<br>
+     * The instance will not be saved!
+     * </p>
      * @author Michael Hegenbarth (carschrotter)
      * @package MinimalusLayoutilus	 
      */
-    trait NoInstances {
+    trait NoInstances{
+	use Instances;
+	
+//	protected $_instanceID;
+//	
+//	public function getInstanceID() {
+//	    return $this->_instanceID;
+//	}
+//
+//	public function setInstanceID($instanceID) {
+//	    $this->_instanceID = $instanceID;
+//	}
+	
+	/**
+	 * 
+	 * @param string $instance the id of 
+	 * @return static
+	 */
+	public static function &getInstance($instance = self::DEFAULTINSTANCE, $t = null) {
+	    $class = classes\Bootstrap::getOverloadedClass(get_called_class());
+	    $reflection = new classes\ReflectionClass($class);
+	    if ($instance == self::DEFAULTINSTANCE) {
+		classes\Error::triggerError($class . '::getInstance() store no reference. Pleas use new ' . $class . '() or ' . $class . '::getInstance(NULL)');
+	    }
+	    $obj = $reflection->newInstanceArgs(func_get_args());
+	    return $obj;
+	}
 
-        /**
-         * 
-         * @param type $instance
-         * @return static
-         */
-        public static function getInstance($instance = 'default') {
-           $class = get_called_class();
-           if(APPLICATIONNAMESPACE) {
-                $tmp_class = classes\ClassHandler::makeClassName(
-                        classes\ClassHandler::cutRootNamespace(get_called_class()),
-                        APPLICATIONNAMESPACE);
-                $class = (classes\Helper::classExists($class, false, true)) ? $tmp_class : $class;
-            }
-            $reflection = new classes\ReflectionClass($class);
-            if($instance == 'default') classes\Error::triggerError($class.'::getInstance() store no reference. Pleas use new '.$class.'() or '.$class.'::getInstance(NULL)');
-            return $reflection->newInstanceArgs(func_get_args());
-        }
-
-        public static function isInit() {
-            throw new exception\Exception('Call to undefined method ' . $this->getClass() . '::' . __FUNCTION__ . '()', exception\Exception::noMethodImplement);
-        }
+	public static function isInit() {
+	    throw new Exception('Call to undefined method ' . $this->getClass() . '::' . __FUNCTION__ . '()', Exception::noMethodImplement);
+	}
 
     }
 

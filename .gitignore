@@ -1,4 +1,7 @@
 /.project
+/load.php
 /php-error.log.php
+/.htaccess
 /nbproject/private/
 /assets/
+/docu

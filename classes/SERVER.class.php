@@ -2,6 +2,7 @@
 
 namespace mnhcc\ml\classes {
 
+    use \mnhcc\ml\traits;
     /**
      * Description of URI
      *
@@ -9,8 +10,10 @@ namespace mnhcc\ml\classes {
      * @package MinimalusLayoutilus	 
      * @copyright (c) 2013, Michael Hegenbarth
      */
-    abstract class SERVER extends MNHcC {
+    class SERVER extends MNHcC implements \ArrayAccess{
 
+	use traits\NoInstances, traits\ArrayAccess;
+	
 	private static $host = false;
 	private static $request_uri = false;
 	private static $ssl = false;
@@ -67,10 +70,10 @@ namespace mnhcc\ml\classes {
         }
         public static function getScriptName() {
             self::$script_name;
-            if (!$script_name) {
-                $script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
+            if (!self::$script_name) {
+                self::$script_name = isset($_SERVER['SCRIPT_NAME']) ? $_SERVER['SCRIPT_NAME'] : getenv('SCRIPT_NAME');
             }
-            return $script_name;
+            return self::$script_name;
         }
          public static function  isDefaultPort() {
              return ( (self::getPort() == 80 && !self::isSSL()) || (self::getPort() == 443 && self::isSSL()) );
@@ -84,22 +87,22 @@ namespace mnhcc\ml\classes {
          * @param bool $virtual also looking for virtual paths e.g. with apache alias
          * @return string
          */
-        public static function getBase($absolut = true, $virtual = false) {
+	public static function getBase($absolut = true, $virtual = false) {
 
-            if (!self::$script_dir) {
-                $script_dir = dirname(self::getScriptName());
-                $script_dir = str_replace("\\", '/', $script_dir);
-                self::$script_dir = rtrim($script_dir, '/') . '/';
+	    if (!self::$script_dir) {
+		$script_dir = dirname(self::getScriptName());
+		$script_dir = str_replace("\\", '/', $script_dir);
+		self::$script_dir = rtrim($script_dir, '/') . '/';
 		unset($script_dir);
-            }
-            $base_url = '';
-            if ($absolut) {
-                $base_url = (is_string($absolut)) ? $absolut : self::getServer();
-            }
-            $base_url .= (isset($_SERVER["CONTEXT_PREFIX"]) && $virtual) ? rtrim($_SERVER["CONTEXT_PREFIX"], '/') . '/' : self::$script_dir;
-            return $base_url;
-        }
-	
+	    }
+	    $base_url = '';
+	    if ($absolut) {
+		$base_url = (is_string($absolut)) ? $absolut : self::getServer();
+	    }
+	    $base_url .= (\key_exists('CONTEXT_PREFIX', $_SERVER) && $_SERVER['CONTEXT_PREFIX'] != '' && $virtual === true) ? (rtrim($_SERVER['CONTEXT_PREFIX'], '/') . '/' ) : self::$script_dir;
+	    return $base_url;
+	}
+
 	public static function base($absolut = true, $virtual = false) {
 	    Error::getInstance()->triggerError(" is deprecated", Error::WARNING);
 	    return self::getBase($absolut, $virtual);
@@ -116,7 +119,8 @@ namespace mnhcc\ml\classes {
          */
         public static function virtualPath() {
             if (!self::$virtualPath) {
-                self::$virtualPath = ltrim(explode('?', self::getRequestUri())[0], self::getBase(true, true));
+		$uri = &MNHcCString::getInstance(explode('?', self::getRequestUri())[0]);
+                self::$virtualPath = $uri->cut(self::getBase(false, true));
             }
             return self::$virtualPath;
         }
@@ -130,11 +134,13 @@ namespace mnhcc\ml\classes {
             $URI = rtrim(explode('?', self::getRequestUri())[0], '/') . '/';
             return ($relativ) ? $URI : self::getServer() . $URI;
         }
+	
 
+
+	
         public static function __callStatic($name, $arguments) {
             parent::__callStatic($name, $arguments);
         }
-
     }
 
 }

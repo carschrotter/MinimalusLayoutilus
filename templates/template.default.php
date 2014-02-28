@@ -1,7 +1,8 @@
 <?php
-if(!\defined("INDEX")) die();
-class_alias('\\mnhcc\\ml\\classes\\Filter', 'Filter');
-class_alias('\\mnhcc\\ml\\classes\\SERVER', 'SERVER');
+namespace mnhcc\ml;
+    use mnhcc\ml\classes\Filter,
+	mnhcc\ml\classes\SERVER;  
+if(!\defined("\\mnhcc\\ml\\INDEX")) die();
 $vserver = (Filter::input('SERVER', 'VSERVER')) ? Filter::input('SERVER', 'VSERVER') : Filter::input('SERVER', 'SERVER_NAME');
 $ip = Filter::input('SERVER', 'REMOTE_ADDR');
 $server = (SERVER::getHost() != 'localhost') ? '//myserver.mn-hegenbarth.de' : 'http://localhost';
@@ -27,8 +28,7 @@ function filter_var_is($variable, $filter, $options) {
         <meta name="description" content="">
         <meta name="author" content="">
         <!-- Le styles -->
-        <!-- TODO: make sure bootstrap.min.css points to BootTheme generated file
-        -->
+        <!-- TODO: make sure bootstrap.min.css points to BootTheme generated file -->
 		<link type="text/css" href="<?=$this->base($server)?>assets/css/bootstrap.css"  rel="stylesheet">
 		<link type="text/css" href="<?=$this->base($server)?>assets/css/jquery-ui-1.10.0.custom.css"  rel="stylesheet">
 		<link type="text/css" href="<?=$this->base($server)?>assets/css/main.css"  rel="stylesheet">
@@ -67,7 +67,7 @@ function filter_var_is($variable, $filter, $options) {
                         <span class="icon-bar"></span>
 
                     </a>
-                    <a class="brand brinside" href="http://myserver.mn-hegenbarth.de"><b>myserver.mn-hegenbarth.de</b> <br>my own web server</a>
+                    <a class="brand brinside" href="http://mnhcc.mn-hegenbarth.de/ml/"><b>Minimalus Layoutilus</b></a>
                     <div class="nav-collapse collapse">
                         <p class="navbar-text pull-right">Logged in as 
 
@@ -86,13 +86,13 @@ function filter_var_is($variable, $filter, $options) {
                         </p>
                         <ul class="nav">
                             <li class="active">
-                                <a href="#">Home</a>
+                                <a href="<?=$this->base($server)?>">Home</a>
                             </li>
                             <li>
-                                <a href="#about">About</a>
+                                <a href="http://mnhcc.mn-hegenbarth.de/">Project</a>
                             </li>
                             <li>
-                                <a href="#contact">Contact</a>
+                                <a href="<?=$this->base($server)?>docu/">Docu</a>
                             </li>
                         </ul>
                     </div>

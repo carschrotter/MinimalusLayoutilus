@@ -2,7 +2,7 @@
 
 namespace mnhcc\ml\classes;
 
-use \mnhcc\ml\classes\exception as exception;
+use \mnhcc\ml\classes\Exception as exception;
 use \mnhcc\ml\interfaces as interfaces;
 use \mnhcc\ml\traits as traits;
 {

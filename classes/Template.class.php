@@ -53,8 +53,7 @@ use \mnhcc\ml;
          * save instance to self::$instances and set self::$init to true;
          */
         public function __construct() {
-            self::$instances['default'] = $this;
-            self::$init = true;
+	    self::setInstance(self::DEFAULTINSTANCE, $this);
 	    EventManager::raise('templateCreated', new template\EventParms($this, []));
         }
 

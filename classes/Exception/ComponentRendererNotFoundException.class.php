@@ -19,14 +19,22 @@
  * MA 02110-1301  USA
  */
 
-/**
- * test
- *
- * @author MNHcC Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>
- * @copyright 2013, MNHcC Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>
- * @license lgpl21
- * @remote.connection Expression remote is undefined on line 17, column 25 in Templates/Scripting/PHPClass.php. Expression project.remote is undefined on line 17, column 46 in Templates/Scripting/PHPClass.php. 
- */
-class test {
-    //put your code here
+namespace mnhcc\ml\classes\Exception {
+
+    use \mnhcc\ml,
+	\mnhcc\ml\classes,
+	\mnhcc\ml\traits,
+	\mnhcc\ml\interfaces,
+	\mnhcc\ml\classes\Exception;
+
+    /**
+     * Description of ViewNotFoundException
+     *
+     * @author Michael Hegenbarth (carschrotter)
+     * @package MinimalusLayoutilus	 
+     */
+    class ComponentRendererNotFoundException extends RenderException {
+	
+    }
+
 }

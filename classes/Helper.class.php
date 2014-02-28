@@ -1,9 +1,28 @@
 <?php
 
-namespace mnhcc\ml\classes;
+/*
+ * Copyright (C) 2013 Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
-use mnhcc\ml\traits as traits;
-{
+namespace mnhcc\ml\classes {
+
+    use \mnhcc\ml\traits,
+	\mnhcc\ml\interfaces;
 
     /**
      * Description of Helper
@@ -11,15 +30,37 @@ use mnhcc\ml\traits as traits;
      * @author Michael Hegenbarth (carschrotter)
      * @package MinimalusLayoutilus
      * @copyright (c) 2013, Michael Hegenbarth
+     * @method static mixed debug(mixed $arg, mixed $arg) Variable to display with var_dump()  string to help debug on sucsess, or falso on error.
+     * @method static string dump($toggleDump = self::toggleDump)
      */
-    abstract class Helper {
+    abstract class Helper implements interfaces\Prototype {
 
-	use traits\Caller;
+	use traits\Prototype;
 
 	const toggleDump = '{toggleDump : "true", secure : "Ay0keRT1l8"}';
 
-	public static function dump() {
-	    return self::__callStatic('dump', func_get_args());
+//	public static function dump() {
+//	    return self::__callStatic('dump', func_get_args());
+//	}
+	protected static $_selfDetectMethodFilter = ['getInstance', 'getInstanceArgs', 'newInstanceArgs', 'newInstance'];
+	
+	public static function getSelfDetectMethodFilter() {
+	    return self::$_selfDetectMethodFilter;
+	}
+
+	public static function setSelfDetectMethodFilter($selfDetectMethodFilter) {
+	    if(!Helper::isArray($selfDetectMethodFilter)) {		
+		throw new Exception\InvalidArgumentException(Exception\InvalidArgumentException::TYPE_ARRAY);
+	    }
+	    self::$_selfDetectMethodFilter = $selfDetectMethodFilter;
+	}
+	
+	public static function addSelfDetectMethodFilter($method) {
+	    self::$_selfDetectMethodFilter[] = $method;
+	}
+	
+	public static function callOrGet($val) {
+	    return \is_callable($val) ? $val() : $val;
 	}
 
 	protected static function __defaultDump($toggleDump = self::toggleDump) {
@@ -98,7 +139,7 @@ use mnhcc\ml\traits as traits;
 	    }
 	    return $clean_classname;
 	}
-	
+
 	static public function generateLegitimer($lenght = 3) {
 	    $lenght = (is_int($lenght) && $lenght >= 1) ? $lenght : 3;
 	    $legitimerChars = ['a', 'b', 'c', 'd', 'e',
@@ -112,7 +153,7 @@ use mnhcc\ml\traits as traits;
 	    }
 	    return $legitimer;
 	}
-	
+
 	static public function checkPost() {
 	    return (bool) count($_POST);
 	}
@@ -134,10 +175,8 @@ use mnhcc\ml\traits as traits;
 	}
 
 	static public function isArray($val) {
-	    if (is_object($val)) {
-		return ($val instanceof \ArrayAccess);
-	    }
-	    return is_array($val);
+	    Error::triggerError(__CLASS__ . '::isArray() is deprecated! Pleas use ' . __NAMESPACE__ . '\\ArrayHelper::isArray()', Error::DEPRECATED);
+	    return ArrayHelper::isArray($val);
 	}
 
 	static public function isJson1($string) {
@@ -154,17 +193,48 @@ use mnhcc\ml\traits as traits;
 	}
 
 	static public function isMLConst($value) {
-	    return is_object(json_decode($value));
+	    return Bootstrap::isMLConst($value);
 	}
 
+	
 	static public function classExists($class, $autoNamespace = true, $autoload = true) {
 	    if ($autoNamespace) {
-		$check = ClassHandler::addRootNamespace($class);
-	    } else {
-		$check = $class;
+		$class = BootstrapHandler::addRootNamespace($class);
 	    }
-	    $answer = (bool) @\class_exists($check, $autoload);
-	    return $answer;
+	    return (bool) \class_exists($class, $autoload);
+	}
+	
+	static public function isTypeof($object, $type, $allow_string = false) {
+	    if(!\is_object($object) && !$allow_string) {
+		return null;
+	    }
+	    if($type == 'self') {
+		$type = self::whereIsSelf();
+	    } 
+	    \is_subclass_of($object, $type, $allow_string);
+	}
+	
+	static public function whereIsSelf() {
+	    $self = false;
+	    $backtrace = debug_backtrace(\DEBUG_BACKTRACE_IGNORE_ARGS, 10); //max 8 hops
+	    ArrayHelper::shift($backtrace, 2); //remove the first stack
+	    //fallback for autocreating
+	    if (ArrayHelper::get('function', $backtrace[0], false) && ArrayHelper::in(self::getSelfDetectMethodFilter(), $backtrace, false, true)) {
+		$i = 0;
+		foreach ($backtrace as $row) {
+		    $i++;
+		    if (!ArrayHelper::in($row['type'], ['::', '->'])) {
+			if (ArrayHelper::get('class', $row, false) 
+				&& !ArrayHelper::in($row['class'], self::getSelfDetectMethodFilter())) {
+			    $self = $row['class'];
+			    break;
+			}
+		    }
+		}
+	    } elseif (isset($backtrace[0]['class'])) { //not be filtered method
+		$self = ArrayHelper::get('class', $backtrace[0], false);
+	    }
+	    return $self;
 	}
 
 	/**
@@ -185,10 +255,6 @@ use mnhcc\ml\traits as traits;
 	    return (new \ReflectionMethod($obj, $method_name))->invokeArgs($obj, $params);
 	}
 
-//                static public function callWhenAvailable($Class) {
-//                    self
-//                    return 
-//                }
     }
 
 }

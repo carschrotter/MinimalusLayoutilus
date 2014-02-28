@@ -12,7 +12,7 @@ use mnhcc\ml\classes as classes;
 	trait Exception {
 		use MNHcC;
 		public function jsonSerialize() {
-			if (classes\Bootstrap::isDebug()) {
+			if (classes\Router::isDebug()) {
 				$value = (object) \get_object_vars($this);
 				unset($value->xdebug_message);
 				$value->trace = $this->getTrace();

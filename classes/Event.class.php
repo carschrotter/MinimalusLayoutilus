@@ -1,9 +1,28 @@
 <?php
 
-namespace mnhcc\ml\classes;
-use mnhcc\ml\interfaces as interfaces;
-use mnhcc\ml\traits as traits;
-{
+/*
+ * Copyright (C) 2013 Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
+
+namespace mnhcc\ml\classes {
+
+    use mnhcc\ml\interfaces,
+	mnhcc\ml\traits as traits;
 
     /**
      * Description of Event
@@ -15,6 +34,7 @@ use mnhcc\ml\traits as traits;
     class Event implements interfaces\Event {
 
 	use traits\Event;
+
 	/**
 	 * @var callable
 	 */
@@ -26,15 +46,15 @@ use mnhcc\ml\traits as traits;
 	 * @param string $event the event name
 	 */
 	public function __construct($callback, $event) {
-	    $this->_eventName = EventManager::cleanEventName($event);
+	    $this->setEventName($event);
 	    if (is_callable($callback)) {
 		$this->_callback = $callback;
 	    } else {
-		throw new exception\Exception('$callback ('.gettype($callback).') is not callable!' );
+		throw new \InvalidArgumentException('$callback (' . gettype($callback) . ') is not callable!');
 	    }
 	}
-	
-	public function getCallback() {
+
+	protected function getCallback() {
 	    return $this->_callback;
 	}
 
@@ -43,7 +63,9 @@ use mnhcc\ml\traits as traits;
 	 * @param \mnhcc\ml\classes\EventParms $eparm
 	 * @return type
 	 */
-	public function raise(EventParms $eparm) {
+	public function raise(EventParms $eparm, $index) {
+	    $this->setEventParms($eparm);
+	    $this->toEventParms($this->_parms);
 	    return \call_user_func($this->getCallback(), $eparm);
 	}
 

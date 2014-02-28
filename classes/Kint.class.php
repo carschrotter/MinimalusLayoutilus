@@ -1,160 +1,204 @@
 <?php
 
-namespace mnhcc\ml\classes;
+/*
+ * Copyright (C) 2013 Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
 
-use mnhcc\ml\traits as traits; {
+namespace mnhcc\ml\classes {
 
-    class Kint extends \Kint implements \mnhcc\ml\interfaces\MNHcC {
+    use \mnhcc\ml\traits,
+	\mnhcc\ml\interfaces;
 
-        use traits\MNHcC;
+    class Kint extends \Kint implements interfaces\MNHcC {
 
-        public static $defaultModifier;
+	use traits\MNHcC;
 
-        /**
-         *
-         * @var  \mnhcc\ml\classes\ReflectionClass 
-         */
-        protected static $_parent;
+	/**
+	 *
+	 * @var \Closure 
+	 */
+	protected static $_css;
 
-        /**
-         * dump information about variables
-         *
-         * @param mixed $data
-         *
-         * @return void|string
-         */
-        public static function dump($data = null) {
-            static $_css, $_wrapStart, $_wrapEnd, $func_init;
-            if (!Kint::enabled())
-                return;
-            if (!$func_init) {
-                $Kint_Decorators_Rich = new ReflectionClass('Kint_Decorators_Rich');
-                
-                $_cssrfl = $Kint_Decorators_Rich->getMethod('_css', ClassHandler::addRootNamespace('ReflectionStaticMethod'));
-                $_cssrfl->setAccessible(true);
-                $_css = $_cssrfl->getClosure();
-                
-                $_wrapStartrfl = $Kint_Decorators_Rich->getMethod('_wrapStart', ClassHandler::addRootNamespace('ReflectionStaticMethod'));
-                $_wrapStartrfl->setAccessible(true);
-                $_wrapStart = $_wrapStartrfl->getClosure();
-                $_wrapStart->bindTo(null, 'Kint_Decorators_Rich');
-                
-                $_wrapEndrfl = $Kint_Decorators_Rich->getMethod('_wrapEnd', ClassHandler::addRootNamespace('ReflectionStaticMethod'));
-                $_wrapEndrfl->setAccessible(true);
-                $_wrapEnd = $_wrapEndrfl->getClosure();
-                $_wrapEnd->bindTo(null, 'Kint_Decorators_Rich');
-                
-                $func_init = true;
-            }
+	/**
+	 *
+	 * @var \Closure 
+	 */
+	protected static $_wrapStart;
 
-            # find caller information
-            $trace = debug_backtrace();
-            list( $names, $modifier, $callee, $previousCaller ) = self::_getPassedNames($trace);
-            $modifier = ($modifier) ? $modifier : self::defaultModifier();
-            if ($names === array(null) && func_num_args() === 1 && $data === 1) {
-                $call = reset($trace);
-                if (!isset($call['file']) && isset($call['class']) && $call['class'] === __CLASS__) {
-                    array_shift($trace);
-                    $call = reset($trace);
-                }
+	/**
+	 *
+	 * @var \Closure 
+	 */
+	protected static $_wrapEnd;
 
-                while (isset($call['file']) && $call['file'] === __FILE__) {
-                    array_shift($trace);
-                    $call = reset($trace);
-                }
+	/**
+	 *
+	 * @var bool 
+	 */
+	protected static $func_init;
+	public static $defaultModifier;
 
-                self::trace($trace);
-                return;
-            }
+	/**
+	 *
+	 * @var  \mnhcc\ml\classes\ReflectionClass 
+	 */
+	protected static $_parent;
 
-            # process modifiers: @, + and -
-            switch ($modifier) {
-                case '-':
-                    self::$_firstRun = true;
-                    while (ob_get_level()) {
-                        ob_end_clean();
-                    }
-                    break;
+	/**
+	 * dump information about variables
+	 *
+	 * @param mixed $data
+	 *
+	 * @return void|string
+	 */
+	public static function dump($data = null) {
 
-                case '!':
-                    self::$expandedByDefault = true;
-                    break;
-                case '+':
-                    $maxLevelsOldValue = self::$maxLevels;
-                    self::$maxLevels = false;
-                    break;
-                case '@':
-                    $firstRunOldValue = self::$_firstRun;
-                    self::$_firstRun = true;
-                    break;
-            }
+	    if (!Kint::enabled())
+		return;
+	    if (!self::$func_init) {
+		$Kint_Decorators_Rich = new ReflectionClass('Kint_Decorators_Rich');
 
-            $data = func_num_args() === 0 ? array("[[no arguments passed]]") : func_get_args();
-            $output = $_css();
-            $output .= $_wrapStart($callee);
+		$cssrfl = $Kint_Decorators_Rich->getMethod('_css', BootstrapHandler::addRootNamespace('ReflectionStaticMethod'));
+		//self::$cssrfl->setAccessible(true);
+		self::$_css = $cssrfl->getClosure();
+		self::$_css->bindTo(null, 'Kint_Decorators_Rich');
 
-            foreach ($data as $k => $argument) {
-                $output .= self::_dump($argument, $names[$k]);
-            }
+		$wrapStartrfl = $Kint_Decorators_Rich->getMethod('_wrapStart', BootstrapHandler::addRootNamespace('ReflectionStaticMethod'));
+		//self::$wrapStartrfl->setAccessible(true);
+		self::$_wrapStart = $wrapStartrfl->getClosure();
+		self::$_wrapStart->bindTo(null, 'Kint_Decorators_Rich');
 
+		$wrapEndrfl = $Kint_Decorators_Rich->getMethod('_wrapEnd', BootstrapHandler::addRootNamespace('ReflectionStaticMethod'));
+		//self::$wrapEndrfl->setAccessible(true);
+		self::$_wrapEnd = $wrapEndrfl->getClosure();
+		self::$_wrapEnd->bindTo(null, 'Kint_Decorators_Rich');
 
-            $output .= $_wrapEnd($callee, $previousCaller);
+		self::$func_init = true;
+	    }
 
-            // $output .= \Kint_Decorators_Rich::_wrapEnd($callee, $previousCaller);
+	    # find caller information
+	    $trace = debug_backtrace();
+	    list( $names, $modifier, $callee, $previousCaller ) = self::_getPassedNames($trace);
+	    $modifier = ($modifier) ? $modifier : self::defaultModifier();
+	    if ($names === array(null) && func_num_args() === 1 && $data === 1) {
+		$call = reset($trace);
+		if (!isset($call['file']) && isset($call['class']) && $call['class'] === __CLASS__) {
+		    array_shift($trace);
+		    $call = reset($trace);
+		}
 
-            self::$_firstRun = false;
+		while (isset($call['file']) && $call['file'] === __FILE__) {
+		    array_shift($trace);
+		    $call = reset($trace);
+		}
 
-            switch ($modifier) {
-                case '+':
-                    self::$maxLevels = $maxLevelsOldValue;
-                    echo $output;
-                    break;
-                case '@':
-                    self::$_firstRun = $firstRunOldValue;
-                    return $output;
-                    break;
-                default:
-                    echo $output;
-                    break;
-            }
+		self::trace($trace);
+		return;
+	    }
 
-            return '';
-        }
+	    # process modifiers: @, + and -
+	    switch ($modifier) {
+		case '-':
+		    self::$_firstRun = true;
+		    while (ob_get_level()) {
+			ob_end_clean();
+		    }
+		    break;
 
-        protected static function _getPassedNames($trace) {
-            static $_getPassedNames;
-            if (!$_getPassedNames) {
-                $class = new ReflectionClass(__CLASS__);
-                $parent = $class->getParentClass();
-                $_getPassedNames = $parent->getMethod('_getPassedNames');
-                $_getPassedNames->setAccessible(true);
-                $rr = $_getPassedNames->getClosure();
-                $rr->bindTo(null, __CLASS__);
-            }
-            return $_getPassedNames->invoke(null, $trace);
-        }
+		case '!':
+		    self::$expandedByDefault = true;
+		    break;
+		case '+':
+		    $maxLevelsOldValue = self::$maxLevels;
+		    self::$maxLevels = false;
+		    break;
+		case '@':
+		    $firstRunOldValue = self::$_firstRun;
+		    self::$_firstRun = true;
+		    break;
+	    }
+
+	    $data = func_num_args() === 0 ? array("[[no arguments passed]]") : func_get_args();
+	    $output = \call_user_func(self::$_css);
+	    $output .= \call_user_func(self::$_wrapStart, $callee);
+
+	    foreach ($data as $k => $argument) {
+		$output .= self::_dump($argument, $names[$k]);
+	    }
+
+	    $output .= \call_user_func(self::$_wrapEnd, $callee, $previousCaller);
+
+	    // $output .= \Kint_Decorators_Rich::_wrapEnd($callee, $previousCaller);
+
+	    self::$_firstRun = false;
+
+	    switch ($modifier) {
+		case '+':
+		    self::$maxLevels = $maxLevelsOldValue;
+		    echo $output;
+		    break;
+		case '@':
+		    self::$_firstRun = $firstRunOldValue;
+		    return $output;
+		    break;
+		default:
+		    echo $output;
+		    break;
+	    }
+
+	    return '';
+	}
+
+	protected static function _getPassedNames($trace) {
+	    static $_getPassedNames;
+	    if (!$_getPassedNames) {
+		$class = new ReflectionClass(__CLASS__);
+		$parent = $class->getParentClass();
+		$_getPassedNames = $parent->getMethod('_getPassedNames');
+		$_getPassedNames->setAccessible(true);
+		$rr = $_getPassedNames->getClosure();
+		$rr->bindTo(null, __CLASS__);
+	    }
+	    return $_getPassedNames->invoke(null, $trace);
+	}
 
 //        protected static function _getPassedNames($trace) {
 //            return parent::_getPassedNames($trace);
 //        }
 
-        public static function defaultModifier($value = null) {
-            # act both as a setter...
-            if (func_num_args() > 0) {
-                self::$defaultModifier = $value;
-                return;
-            }
+	public static function defaultModifier($value = null) {
+	    # act both as a setter...
+	    if (func_num_args() > 0) {
+		self::$defaultModifier = $value;
+		return;
+	    }
 
-            # ...and a getter
-            return self::$defaultModifier;
-        }
+	    # ...and a getter
+	    return self::$defaultModifier;
+	}
 
-        public static function _init() {
-            return parent::_init();
-        }
+	public static function _init() {
+	    return parent::_init();
+	}
 
-        public static function ___onLoaded() {
-        }
+	public static function ___onLoaded() {
+	    
+	}
 
     }
 

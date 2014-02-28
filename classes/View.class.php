@@ -2,6 +2,9 @@
 
 namespace mnhcc\ml\classes {
 
+    use \mnhcc\ml\interfaces;
+
+
 	/**
 	 * Description of View
 	 *
@@ -9,10 +12,10 @@ namespace mnhcc\ml\classes {
 	 * @package MinimalusLayoutilus	
 	 * @copyright (c) 2013, Michael Hegenbarth 
 	 */
-	abstract class View extends MNHcC{
+	abstract class View extends MNHcC implements interfaces\Instances, interfaces\View{
 
 		use \mnhcc\ml\traits\Instances;
-
+		
 		/**
 		 *
 		 * @var \Exception
@@ -30,7 +33,7 @@ namespace mnhcc\ml\classes {
 		 * @param string $type example HTML
 		 * @param \mnhcc\ml\classes\ReflectionClass $class
 		 * @return \mnhcc\ml\classes\View
-		 * @throws \mnhcc\ml\classes\exception\ViewNotFoundException
+		 * @throws \mnhcc\ml\classes\Exception\ViewNotFoundException
 		 * @throws \ReflectionException
 		 */
 		public static function getView($type, $class) {
@@ -41,7 +44,7 @@ namespace mnhcc\ml\classes {
 				$rfc = new ReflectionClass($cName);
 			} catch (\ReflectionException $exc) {
 				if ($rvClass) {
-					self::$Exception = new exception\ViewNotFoundException($cName, $exc);
+					self::$Exception = new Exception\ViewNotFoundException($cName, $exc);
 				} else {
 					self::$Exception = $exc;
 				}
@@ -55,7 +58,7 @@ namespace mnhcc\ml\classes {
 		}
 
 		public function getViewBaeName() {
-			return str_replace(__CLASS__, '', get_class($this));
+			return str_replace(__CLASS__, '', $this->getClass());
 		}
 
 		/**
@@ -64,7 +67,7 @@ namespace mnhcc\ml\classes {
 		 * @return string base name from template
 		 */
 		public function getMethodBaeName($name) {
-			return strtolower(str_replace('render', '', $name));
+			return \strtolower(\str_replace('render', '', $name));
 		}
 
 		/**
@@ -94,8 +97,8 @@ namespace mnhcc\ml\classes {
 		 * @param string $name
 		 * @param array $arguments
 		 * @return string
-		 * @throws exception\ComponentRendererNotFoundException
-		 * @throws exception\ModulRendererNotFoundException
+		 * @throws Exception\ComponentRendererNotFoundException
+		 * @throws Exception\ModulRendererNotFoundException
 		 * @throws \Exception
 		 */
 		public function __call($name, $arguments) {
@@ -106,11 +109,11 @@ namespace mnhcc\ml\classes {
 			}
 			// raise a ComponentRendererNotFoundException
 			if (strpos($name, 'renderComponent') !== false) {
-				throw new exception\ComponentRendererNotFoundException($name, get_class($this), -1);
+				throw new Exception\ComponentRendererNotFoundException($name, get_class($this), -1);
 			}
 			// raise a ModulRendererNotFoundException
 			if (strpos($name, 'renderModul') !== false) {
-				throw new exception\ModulRendererNotFoundException($name, get_class($this), -1);
+				throw new Exception\ModulRendererNotFoundException($name, get_class($this), -1);
 			}
 			// default Exception
 			throw new \Exception('No Method ' . $name . '() implement in ' . get_class($this), -1);

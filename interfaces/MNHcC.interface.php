@@ -8,7 +8,8 @@ namespace mnhcc\ml\interfaces {
 	 * @package MinimalusLayoutilus	 
 	 */
 	interface MNHcC {
-
+		const secure = 'Ay0keRT1l8';
+		
                 public static function ___onLoaded();
                 
 		/**

@@ -1,9 +1,8 @@
 <?php
 
-namespace mnhcc\ml\classes\template;
+namespace mnhcc\ml\classes\template {
 
-use mnhcc\ml\classes as classes;
-{
+    use mnhcc\ml\classes;
 
     /**
      * Description of Template
@@ -39,7 +38,7 @@ use mnhcc\ml\classes as classes;
 	    // Let's grab all the key/value pairs using a regular expression
 	    preg_match_all('/([\w:-]+)[\s]?=[\s]?"([^"]*)"/i', $string, $attr);
 
-	    if (classes\Helper::isArray($attr)) {
+	    if (classes\ArrayHelper::isArray($attr)) {
 		$numPairs = count($attr[1]);
 		for ($i = 0; $i < $numPairs; $i++) {
 		    $retarray[$attr[1][$i]] = $attr[2][$i];
@@ -50,7 +49,7 @@ use mnhcc\ml\classes as classes;
 	}
 
 	public function addStyle($options) {
-	    if (classes\Helper::isArray($options)) {
+	    if (classes\ArrayHelper::isArray($options)) {
 		$autopath = isset($options[self::CSS_AUTOPATH]) ? $options[self::CSS_AUTOPATH] : true;
 		$href = isset($options['href']) ? $options['href'] : false;
 
@@ -78,7 +77,7 @@ use mnhcc\ml\classes as classes;
 	}
 
 	public function addScript($options) {
-	    if (classes\Helper::isArray($options)) {
+	    if (classes\ArrayHelper::isArray($options)) {
 		$autopath = isset($options[self::SCRIPT_AUTOPATH]) ? $options[self::SCRIPT_AUTOPATH] : true;
 		$src = isset($options['src']) ? $options['src'] : false;
 
@@ -101,20 +100,23 @@ use mnhcc\ml\classes as classes;
 	public function getScriptLocation() {
 	    return $this->_ScriptLocation;
 	}
+
 	public function getCSSLocation() {
 	    return $this->_CSSLocation;
 	}
+
 	public function setScriptLocation($ScriptLocation) {
 	    return $this->_ScriptLocation = $ScriptLocation;
 	}
+
 	public function setCSSLocation($CSSLocation) {
 	    return $this->_CSSLocation = $CSSLocation;
 	}
-	
+
 	public function getCSSPath($href, $auto_complete = true) {
-	    $extention = (bool) (count(explode('.', $href)) -1);
+	    $extention = (bool) (count(explode('.', $href)) - 1);
 	    if ($auto_complete) {
-		return $this->base() . $this->getCSSLocation()  . $href . (($extention) ? '' : '.css');
+		return $this->base() . $this->getCSSLocation() . $href . (($extention) ? '' : '.css');
 	    } else {
 		return $href;
 	    }
@@ -294,7 +296,7 @@ use mnhcc\ml\classes as classes;
 		    } elseif (strtolower($args['type']) != 'system') {
 			${'&content'} = '';
 		    }
-		} catch (classes\exception\RenderException $exc) {
+		} catch (classes\Exception\RenderException $exc) {
 		    ${'&content'} = '<pre>' . $exc->getMessage() . '</pre>';
 		}
 	    }
@@ -307,7 +309,7 @@ use mnhcc\ml\classes as classes;
 
 	protected function _renderErrors() {
 	    $str = '';
-	    if (classes\Bootstrap::isDebug()) {
+	    if (classes\Router::isDebug()) {
 		foreach ($this->getErrors() as $error) {
 		    $str .= '<div class="alert alert-error"><h4>Error ' . $error['code'] . '</h4><p>' . $error['msg'] . '</p></div>';
 		}
@@ -363,9 +365,9 @@ use mnhcc\ml\classes as classes;
 		    }
 		}
 		if ($text) {
-		    $style .= sprintf('<style %s>%s</style>'.n, $parm, $text);
+		    $style .= sprintf('<style %s>%s</style>' . n, $parm, $text);
 		} else {
-		    $style .= sprintf('<link %s />'.n, $parm);
+		    $style .= sprintf('<link %s />' . n, $parm);
 		}
 	    }
 	    return $style;

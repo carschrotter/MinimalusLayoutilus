@@ -1,6 +1,28 @@
 <?php
 
+/*
+ * Copyright (C) 2013 Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
+
 namespace mnhcc\ml\classes {
+    
+    use \mnhcc\ml\traits,
+	\mnhcc\ml\classes\BootstrapHandler as BH;
     /**
      * Description of Error
      *
@@ -10,7 +32,7 @@ namespace mnhcc\ml\classes {
      */
     class Error extends MNHcC {
 
-	use \mnhcc\ml\traits\Instances;
+	use traits\Instances;
 
 	const ERROR = E_ERROR;
 	const WARNING = E_WARNING;
@@ -18,11 +40,11 @@ namespace mnhcc\ml\classes {
 	const STRICT = E_STRICT;
 	const DEPRECATED = E_DEPRECATED;
 	const EXCEPTION = -1;
-	const RAISEUSETEMPLATE = '{"RAISEUSETEMPLATE":true,"secure":"Ay0keRT1l8"}';
-	const RAISEERROR = '{"RAISEERROR":true,"secure":"Ay0keRT1l8"}';
+	const RAISE_USE_TEMPLATE = '{"RAISEUSETEMPLATE":true,"secure":"Ay0keRT1l8"}';
+	const RAISE_ERROR = '{"RAISEERROR":true,"secure":"Ay0keRT1l8"}';
 
+	
 	protected static $_templateParms = ['~baseurl~' => '/', '~heading~' => '<h1>Error 500</h1>'];
-
 	/**
 	 * the default template for shutdown event
 	 * @var string 
@@ -57,8 +79,42 @@ namespace mnhcc\ml\classes {
 </body>
 </html>
 EOF;
+	/**
+	 * which were "bugs" already displayed?
+	 * @var bool 
+	 */
 	protected $_isDisplayedBugs = false;
+	
+	/**
+	 * protection against empty page (blank creen).
+	 * @var type 
+	 */
+	protected $_blankScreenProtection = true;
+	
+	/**
+	 * array of all errors in exception form
+	 * @var array
+	 */
+	private $_exceptions = array();
 
+	/**
+	 * Value is true when is json vormat
+	 * @var type
+	 */
+	protected $_isJson = false;
+
+	/**
+	 * responsecode (Errorstate)
+	 * @var int 
+	 */
+	protected $_code = 0;
+	
+	/**
+	 *
+	 * @var array 
+	 */
+	protected $_errorHash = [];
+	
 	public function isDisplayedBugs() {
 	    return $this->_isDisplayedBugs;
 	}
@@ -76,24 +132,6 @@ EOF;
 
 	    return $template;
 	}
-
-	/**
-	 * array of all error in exeptionform
-	 * @var array
-	 */
-	private $_exceptions = array();
-
-	/**
-	 * Value is true when is json vormat
-	 * @var type
-	 */
-	protected $_isJson = false;
-
-	/**
-	 * responsecode (Errorstate)
-	 * @var int 
-	 */
-	protected $_code = 0;
 
 	/**
 	 * set the responsecode (Errorstate)
@@ -127,14 +165,14 @@ EOF;
 	}
 
 	public function __construct() {
-	    $this->parms = Parm::getInstance();
-	    $this->blankScreenProtection = (bool) $this->parms->get('blankScreenProtection', 1);
+	    $this->parms = Router::getInstance()->getParm();
+	    $this->_blankScreenProtection = (bool) $this->parms->get('blankScreenProtection', 1);
 	    if ($this->parms->get('enabeled', 1)) {
 		register_shutdown_function([$this, 'shutdown']);
 		set_error_handler([$this, 'handleError']);
 		set_exception_handler([$this, 'handleException']);
 	    }
-	    if ($this->blankScreenProtection) {
+	    if ($this->_blankScreenProtection) {
 		ob_start();
 		ob_implicit_flush(false);
 	    }
@@ -144,7 +182,7 @@ EOF;
 	public function __destruct() {
 	    restore_error_handler();
 	    restore_exception_handler();
-	    if (!$this->blankScreenProtection) {
+	    if (!$this->_blankScreenProtection) {
 		return;
 	    }
 	    $contents = ob_get_contents();
@@ -192,16 +230,25 @@ EOF;
 	    $html = '';
 	    if (!$this->isDisplayedBugs()) {
 		$html = $this->displayBugs();
-		$html .= "<script>
+		$html .= "<script  type=\"text/javascript\">
                     function toggleContainer(name) {
-                    var e = document.getElementById(name);// jQery might not be available ;)
+                    var e = document.getElementById(name);// old scool. jqery might not be available ;)
                     e.style.height = (e.style.height == '0px') ? 'auto' : '0px';
                     }
                     </script>";
 	    }
-	    $contents = str_replace('<div id="placeholder">Error</div>', '', $doc);
-	    $contents = str_replace('</body>', n . $html . n . '</body>', $contents);
-	    return $contents;
+	    $msg = '';
+	    if(strpos($doc, '</body>') === false) {
+		if (Helper::classExists('SERVER', true)) {
+		    self::$_templateParms['~baseurl~'] = SERVER::getBase();
+		}
+		$msg ='<pre class="invalidContent">'.$doc.'</pre>';
+		$doc =  self::renderTemplate('The program was completed without spending valid html.', '');
+	    }
+	    $doc = str_replace('</body>', n . $html . n . '</body>', $doc);
+	    $doc = str_replace('<div id="placeholder">Error</div>',$msg, $doc);
+	    
+	    return $doc;
 	}
 
 	/**
@@ -216,15 +263,22 @@ EOF;
 	    $this->_setCode($code);
 	    $template = (Helper::classExists('Template', true) && Template::isInit()) ? Template::getInstance() : null;
 	    $logmsg = 'Enabele debug to show this message.';
-	    if (Helper::classExists('Bootstrap', true, false)) {
-		if (Bootstrap::isDebug()) {
+	    if (Helper::classExists('Router', true, false)) {
+		if (Router::isDebug()) {
 		    $logmsg = $log;
+		    $logmsg = ($logmsg) ? $logmsg : $message->getMessage() . ': in file '
+		    . $message->getFile()
+		    . ' on line '
+		    . $message->getLine();
 		}
+	    }
+	    if(\is_object($message) && $message instanceof \Exception){
+		$this->_exceptions[] = $message;
 	    }
 	    switch ($code) {
 		case 505:
-		    if (Helper::classExists('Bootstrap', true, false)) {
-			Bootstrap::header(505);
+		    if (Helper::classExists('Router', true, false)) {
+			Router::header(505);
 		    }
 		    if (Helper::classExists('SERVER', true, false)) {
 			self::$_templateParms['~baseurl~'] = SERVER::getBase();
@@ -232,29 +286,35 @@ EOF;
 		    die($this->documentPrepare(self::renderTemplate($message, $logmsg)));
 		    break;
 		case 404: case 403: default:
-		    Bootstrap::header($code);
+		    Router::header($code);
 		    if ($template != null) {
 			$template->error($code, $message);
-			return self::RAISEUSETEMPLATE;
+			return self::RAISE_USE_TEMPLATE;
 		    } else {
-
-			if (Helper::classExists('SERVER', true))
+			if(Helper::classExists('SERVER', true)){
 			    self::$_templateParms['~baseurl~'] = SERVER::getBase();
+			}
 			die($this->documentPrepare(self::renderTemplate($message, $logmsg)));
 		    }
-		    break;
+		    break; 
 	    }
-	    return self::RAISEERROR;
+	    return self::RAISE_ERROR;
 	}
 
 	/**
+	 * @see \trigger_error()
 	 * <b>Generates a user-level error/warning/notice message</b>
-	 * <p>Used to trigger a user error condition, it can be used by in conjunction with the built-in error handler, or with a user defined function that has been set as the new error handler
-	 * <br>
-	 * This function is useful when you need to generate a particular response to an exception at runtime.</p>
-	 * @param string $error_msg The designated error message for this error. It's limited to 1024 bytes in length. Any additional characters beyond 1024 bytes will be truncated.
-	 * @param int  $error_type The designated error type for this error. It only works with the E_USER family of constants, and will default to E_USER_NOTICE.
-	 * @return type
+	 * @param string $error_msg <p>
+	 * The designated error message for this error. It's limited to 1024
+	 * bytes in length. Any additional characters beyond 1024 bytes will be
+	 * truncated.
+	 * </p>
+	 * @param int $error_type [optional] <p>
+	 * The designated error type for this error. It only works with the E_USER
+	 * family of constants, and will default to <b>E_USER_NOTICE</b>.
+	 * </p>
+	 * @return bool This function returns <b>FALSE</b> if wrong <i>error_type</i> is
+	 * specified, <b>TRUE</b> otherwise.
 	 */
 	public static function triggerError($error_msg, $error_type = E_USER_NOTICE) {
 	    switch (self::getType($error_type)) {
@@ -274,7 +334,7 @@ EOF;
 		default:
 		    break;
 	    }
-	    return trigger_error($error_msg, $error_type);
+	    return \trigger_error($error_msg, $error_type);
 	}
 
 	public function shutdown($exception = null) {
@@ -283,16 +343,14 @@ EOF;
 		$exception = $this->getLastException(true);
 	    }	   
 	    if (Helper::classExists('EventManager', true, false)) {
-		EventManager::raise('shutdown', new EventParms(['lastException' => $exception])) ;
+		EventManager::raise('shutdown', new EventParms\ExceptionEventParms(['exception' => $exception])) ;
 	    }
-	    if (!is_object($exception)) {
+	    if (!\is_object($exception)) {
 		return exit();
 	    }
 	    $this->isJson(false);
 	    if (self::isExit($exception->getCode())) {
-		ob_clean();
-
-				
+		ob_clean();	
 		$this->raise(505,
 			'<span style="color:inherit; font-weight:900;">Shutdown with BugCatcher :-(</span><br />', 
 			$exception->getMessage() . ' in '
@@ -300,7 +358,7 @@ EOF;
 			    . $exception->getLine()
 		);
 	    }
-	    //exit();
+	    exit(0);
 	}
 
 	public static function getType($code) {
@@ -361,8 +419,9 @@ EOF;
 			);
 	    };
 	    $last = error_get_last();
-	    if ($last)
+	    if ($last){
 		$this->handleError($last['type'], $last['message'], $last['file'], $last['line']);
+	    }
 	    if (count($this->_exceptions) > 0) {
 		$index = (count($this->_exceptions) - 1);
 		if ($test($this->_exceptions[$index], $last)) { //check error on Helper and co
@@ -381,22 +440,36 @@ EOF;
 
 	/**
 	 * 
-	 * @param \Exception $exception
+	 * @param \Exception $e
 	 */
-	protected function log($exception) {
+	protected function log(\Exception $e) {
 	    if (Helper::classExists('Config', true, false)) {
 		Config::getInstance()->get('errror.log', false);
 	    } else {
 		$logfile = ( ini_get('error_log') ) ? ini_get('error_log') : './php-error.log.php';
-		$message = (new \DateTime())->format('Y-m-d H:i:s') 
-			. ': '
-			. $exception->getMessage() 
-			. ' on '  
-			. $exception->getFile() 
-			. ':[' . $exception->getLine() . ']' 
-			. $exception->getTraceAsString() . PHP_EOL. PHP_EOL;
-		\error_log($message, 3, $logfile);
+		$date = new \DateTime();
+		\error_log(
+			self::logFormat(
+				$date->format('Y-m-d H:i:s'), $date->getTimezone()->getName(), $e->getMessage(), $e->getFile(), $e->getLine(), $e->getTrace()
+			), 3, $logfile);
 	    }
+	}
+
+	public static function logFormat($time, $timezone, $message, $file, $line, array $trace = []) {
+	    $message = "[$time $timezone] PHP MNHcCError "
+		    . $message
+		    . ' in '
+		    . $file
+		    . " on line $line." . PHP_EOL.PHP_EOL;
+	    foreach ($trace as $i => $itrace) {
+		if ($i === 1) {
+		    $message .= "[$time $timezone] PHP Stack trace:" . PHP_EOL.PHP_EOL;
+		}
+		$message .= "[$time $timezone] PHP " 
+			. ArrayHelper::get('function', $itrace, '{main}') . '() ' 
+			. ArrayHelper::get('file', $itrace, 'eval')  . ':' . ArrayHelper::get('line', $itrace, 0) . PHP_EOL . PHP_EOL;
+	    };
+	    return $message;
 	}
 
 	/**
@@ -404,8 +477,8 @@ EOF;
 	 * @return boolean
 	 */
 	public function handleException($exception) {
-	    EventManager::raise('exception', new EventParms(['exception' => $exception])) ;
 	    $this->_exceptions[] = $exception;
+	    EventManager::raise('exception', new EventParms\ExceptionEventParms(['exception' => $exception]));
 	    self::log($exception);
 	    return true;
 	}
@@ -435,7 +508,11 @@ EOF;
 	 * @throws \ErrorException
 	 */
 	public static function throwErrorException($errno, $errstr, $errfile, $errline) {
-	    throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
+	    if(Helper::classExists('Exception\\ErrorException', true, true)) {
+		throw new Exception\ErrorException($errstr, $errno, $errno, $errfile, $errline);
+	    } else {
+		throw new \ErrorException($errstr, $errno, $errno, $errfile, $errline);
+	    }
 	}
 
 	private function param($name, $default = NULL) {
@@ -468,38 +545,55 @@ EOF;
 		$memoryUsage = new Bytes(memory_get_usage());
 		$memoryLimit = new Bytes(ini_get('memory_limit'));
 		if ($memoryUsage->toFloat() < ($memoryLimit->toFloat() - 128)) {
-		    $html .= $this->renderError($exception);
+		    $has = \md5(\htmlentities(\json_encode($exception)));
+		    if( $this->addErrorHash($has) < 2) {
+			$html .= $this->renderError($exception, $has);
+		    }
 		} else {
 		    $Bytes = new Bytes(memory_get_usage());
 		    $html .= '<b>' . $memoryUsage->getUfriendlySize() . ' is to mutch! ' . $memoryLimit->getUfriendlySize() . ' is The Limit!</b>' . n;
 		    break;
 		}
 	    }
+	    $html = str_replace(array_keys($this->_errorHash), $this->_errorHash, $html);
+	    
 	    $memoryUsage = new Bytes(memory_get_usage());
 	    $memoryLimit = new Bytes(ini_get('memory_limit'));
-	    $runtime = microtime(true) - (STARTTIME);
+	    $runtime = 'not enabeled';
+	    if(Bootstrap::defined('STARTTIME')){
+		$runtime = microtime(true) - Bootstrap::constant('STARTTIME');
+	    } 
 	    $html .= '<div><code>Runtime: ' . $runtime . ' ' . $memoryUsage->getUfriendlySize() . ' from max ' . $memoryLimit->getUfriendlySize() . '</code>';
 	    $html .= '</div></div></div></div></div></div>';
 	    return $html;
 	}
-
+	
+	protected function addErrorHash($hash) {
+	    if(ArrayHelper::keyExists($hash, $this->_errorHash)) {
+		$this->_errorHash[$hash] = $this->_errorHash[$hash]++;
+	    } else {
+		$this->_errorHash[$hash] = 1;
+	    }
+	    return $this->_errorHash[$hash];
+	}
+	
 	/**
 	 * @staticvar string $html
 	 * @staticvar int $id
 	 * @param Exception $exception
 	 * @return string
 	 */
-	protected function renderError($exception) {
+	protected function renderError($exception, $has) {
 	    static $id;
-	    if ($id === null)
-		$id = 1;
+	    if ($id === null){$id = 1;}
 	    $html = '';
 	    $js = "toggleContainer('dbgContainer_BugCatcher" . $id . "');";
-	    $style = ' style="display: none;"';
+	    $style = ' style="height: 0px;"';
 	    $errorType = (is_a($exception, 'ErrorException')) ? self::FriendlyErrorType($exception->getCode()) : get_class($exception);
 	    $html .= '          <div class="dbgHeader" onclick="' . $js . '">' . n
 		    . '           <a href="javascript:void(0);">' . n
 		    . '               <h3 title="' . self::FriendlyErrorType($exception->getCode()) . ' in ' . $exception->getFile() . '">       ' . n
+		    . '['.$has.'] '
 		    . $exception->getMessage() . n
 		    . '               </h3>' . n
 		    . '           </a>' . n
@@ -545,7 +639,6 @@ EOF;
 //        }
 
 	public static function renderTraceArray($trace, $key = 0) {
-
 	    $highlight = [];
 	    $highlight['keyword'] = ini_get('highlight.keyword') ? ini_get('highlight.keyword') : '#007700';
 	    $highlight['comment'] = ini_get('highlight.comment') ? ini_get('highlight.comment') : '#FF8000';
@@ -556,7 +649,11 @@ EOF;
 	    if (isset($trace['args'])) {
 		$args .= '<ol>';
 		foreach ($trace['args'] as $arg) {
-		    $args .= '<li>' . str_replace(['<pre', '</pre'], ['<code', '</code'], Helper::dump($arg)) . '</li>';
+		    try {
+			$args .= '<li>' . str_replace(['<pre', '</pre'], ['<code', '</code'], Helper::dump($arg)) . '</li>';
+		    } catch (\Exception $ex) {
+			$args .= '<li>' . str_replace(['<pre', '</pre'], ['<code', '</code'], $ex->getMessage()) . '</li>';
+		    }
 		}
 		$args .= '</ol>';
 	    }
@@ -565,14 +662,28 @@ EOF;
 	    $contents = '     <tr>' . n
 		    . '         <td class="TD">' . $key . '</td>' . n;
 	    if (isset($trace['class'])) {
-		$contents .= '         <td class="TD" style="color:' . $highlight['default'] . '">' . $trace['class'] . '<span style="color:' . $highlight['keyword'] . '">' . $trace['type'] . '</span>' . $trace['function'] . '<span style="color:' . $highlight['keyword'] . '">(' . $args . ')</span></td>' . n;
+		$contents .= 
+			'         <td class="TD" style="color:' . $highlight['default'] . '">' 
+			. $trace['class'] 
+			. '<span style="color:' . $highlight['keyword'] . '">' 
+			. $trace['type'] 
+			. '</span>' 
+			. $trace['function'] 
+			. '<span style="color:' . $highlight['keyword'] . '">(' . $args . ')</span></td>' . n;
 	    } else {
-		$contents .= '         <td class="TD" style="color:' . $highlight['default'] . '">' . $trace['function'] . '<span style="color:' . $highlight['keyword'] . '">(' . $args . ')</span></td>' . n;
+		$contents .= 
+			'         <td class="TD" style="color:' . $highlight['default'] . '">' 
+			. $trace['function'] 
+			. '<span style="color:' . $highlight['keyword'] . '">(' . $args . ')</span></td>' . n;
 	    }
 	    if (isset($trace['file'])) {
-		$contents .= '         <td class="TD" style="color:' . $highlight['string'] . '">' . $trace['file'] . ':' . $trace['line'] . '</td>' . n;
+		$contents .= 
+			'         <td class="TD" style="color:' . $highlight['string'] . '">' 
+			. $trace['file'] . ':' . $trace['line'] 
+			. '</td>' . n;
 	    } else {
-		$contents .= '         <td class="TD">&#160;</td>' . n;
+		$contents .= 
+			'         <td class="TD">&#160;</td>' . n;
 	    }
 	    $contents .= '     </tr>' . n;
 	    return $contents;
@@ -625,19 +736,27 @@ EOF;
 		$template->addStyle('debug');
 	    }
 	}
+	
+	public static function ___require() {
+	    return parent::___require();
+	}
 
 	public static function ___onLoaded() {
 	    self::$___require = [
-		ClassHandler::TYPE_CLASS => __NAMESPACE__ .'\\Helper',
-		ClassHandler::TYPE_CLASS => __NAMESPACE__ .'\\Bytes'];
+		BH::TYPE_CLASS => BH::addRootNamespace('ArrayHelper'),
+		BH::TYPE_CLASS => BH::addRootNamespace('Helper'),
+		BH::TYPE_CLASS => __NAMESPACE__ .'\\Bytes'];
 	    
-	    return ClassHandler::Load('Helper', true, ClassHandler::TYPE_CLASS) &&
-		ClassHandler::Load('Bytes', true, ClassHandler::TYPE_CLASS) &&
-		ClassHandler::Load('Bootstrap', false, ClassHandler::TYPE_CLASS);
+	    return BH::Load('Helper', true, BH::TYPE_CLASS) &&
+		BH::Load('ArrayHelper', true, BH::TYPE_CLASS) &&
+		BH::Load('Bytes', true, BH::TYPE_CLASS) &&
+		BH::Load('Router', false, BH::TYPE_CLASS) &&
+		BH::Load('Bootstrap', false, BH::TYPE_CLASS);
 	}
-//		public function renderBacktrace($exception) {
-//			return '<pre>'.htmlentities(print_r($exception, true)).'</pre>';
-//		}
+	
+//	public function renderBacktrace($exception) {
+//		return '<pre>'.htmlentities(print_r($exception, true)).'</pre>';
+//	}
     }
 
 }

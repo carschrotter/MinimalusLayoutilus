@@ -1,6 +1,28 @@
 <?php
 
-namespace mnhcc\ml\classes; {
+/*
+ * Copyright (C) 2013 Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
+
+namespace mnhcc\ml\classes {
+    
+    use \mnhcc\ml\interfaces,
+	\mnhcc\ml\traits;
     /**
      * Description of Config
      * 
@@ -8,103 +30,101 @@ namespace mnhcc\ml\classes; {
      * @package MinimalusLayoutilus	
      * @copyright (c) 2013, Michael Hegenbarth
      */
-    class Config extends MNHcC {
-
-        use \mnhcc\ml\traits\Instances;
+    class Config extends \ArrayObject implements interfaces\MNHcC, interfaces\MNHcCArray, \ArrayAccess, interfaces\Instances {
+	
+	use traits\MNHcC,
+	    traits\Instances;
         
         protected static $_instanceClass = __CLASS__;
-        
-        public $secure = 'Ay0keRT1l8';
-        public $paths = ['root' => __DIR__];
-        protected static $Consts = [];
-        
-        /**
-         * 
-         * @param string $name
-         * @param mixed $value
-         * @return boolean
-         */
-        public static function setConst($name, $value) {
-            if (self::isInit()){
-                self::$Consts[$name] = $value;
-                return true;
-            } else {
-                return false;
-            }
-            
-        }
-        
-        protected static function setConsts() {
-            foreach (self::$Consts as $name => $val) {
-                if(!defined($name)) {
-                    define($name, $val);
-                }
-            }
-        }
-   
-        public function __construct($config = NULL) {
-            $parts = explode(NSS, static::getCalledClass());
-            $this->provider = $parts[0];
-            $this->aplication = $parts[1];
-	    if($config !== NULL) $this->add($config);
-            self::$instances['default'] = & $this;
-
-            $this->setConsts();
-        }
-	
-	public function add($var, $key = Null) {
-	    if((is_array($var) || is_object($var)) && $key === NULL) {
-		foreach($var as $key => $value) {
-		    $this->set($key, $value);
-		}
-	    } else {
-		$this->set($key, $var);
-	    }	
-	    return false;
+//	protected $_store = [];
+        protected static $_consts = [];
+       
+	public function __construct($array = [], $flags = self::ARRAY_AS_PROPS, $iterator_class = "ArrayIterator" ) {
+	    parent::__construct($array, (self:: STD_PROP_LIST ), $iterator_class);
 	}
-	
-        public function set($key, $value) {
-            $this->$key = $value;
-        }
+//        public function __construct($config = null) {
+//	    if ($config !== null) {
+//		$this->add($config);
+//	    }
+//	}
 
+//	public function add($var, $key = null) {
+//	    if(Helper::isArray($var) && $key === null) {
+//		foreach($var as $key => $value) {
+//		    $this->set($key, $value);
+//		}
+//	    } else {
+//		$this->set($key, $var);
+//	    }	
+//	    return false;
+//	}
+//	
+//        public function set($key, $value) {
+//            $this->_store[$key] = $value;
+//        }
+//
         public function get($key, $default = null) {
 	    $keys = explode('.', $key);
-	    if (!isset($this->$keys[1])) return $default;
+	    $key = null;
+	    if (!isset($this[$keys[0]])) return $default;
 	    
-	    foreach($keys as $K) {
-		if(isset($ref)) {
-		    $ref  = &$this->$K;
+	    foreach($keys as $key) {
+		if(!isset($ref)) {
+		    $ref  = &$this[$key];
 		} else {
-		    if (Helper::isArray($ref) && isset($ref[$K])) {
-			$ref = &$ref[$K];
+		    if (Helper::isArray($ref) && isset($ref[$key])) {
+			$ref = &$ref[$key];
 		    } else {
 			return $default;
 		    }
 		}
 	    }
 	    
-            return $default;
+            return ($ref) ? $ref : $default ;
         }
 
         public static function __callStatic($name, $arguments) {
             return static::getInstance()->get($name);
         }
-        
-        protected static function _setDefault($class) {
-            self::$_instanceClass = $class;
-        }
-        
-        /**
-         * 
-         * @param string $instance
-         * @return static
-         */
-        public static function getInstance($instance = 'default') {
-                if (!isset(self::$instances[$instance])) {
-                        self::$instances[$instance] = new static();
-                }
-                return self::$instances[$instance];
-        }
+	
+	public function set($name, $value) {
+	    return $this->offsetSet($name, $value);
+	}
+	
+//        
+//        protected static function _setDefault($class) {
+//            return self::$_instanceClass = $class;
+//        }
+//	public function __get($name) {
+//	    return $this->get($name);
+//	}
+//	public function __set($name, $value) {
+//	    return $this->set($name, $value);
+//	}
+//	public function offsetExists($offset) {
+//	    return \key_exists($offset, $this->_store);
+//	}
+//	public function offsetGet($offset) {
+//	    return $this->get($offset);
+//	}
+//	public function offsetSet($offset, $value) {
+//	   return $this->set($offset, $value);
+//	}
+//	public function offsetUnset($offset) {
+//	    unset($this->_store[$offset]);
+//	}
+//        
+//        /**
+//         * 
+//         * @param string $instance
+//         * @return static
+//         */
+//        public static function getInstance($instance = 'default') {
+//                if (!isset(self::$instances[$instance])) {
+//                        self::$instances[$instance] = new static();
+//                }
+//                return self::$instances[$instance];
+//        }
     }
 
 }

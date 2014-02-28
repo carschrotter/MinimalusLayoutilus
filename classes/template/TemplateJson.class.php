@@ -1,7 +1,9 @@
 <?php
-namespace mnhcc\ml\classes\template;
-use mnhcc\ml\classes as classes;
-{
+namespace mnhcc\ml\classes\template{
+    
+	use mnhcc\ml\classes,
+	mnhcc\ml\classes\Exception as Exception;
+
 	/**
 	 * Description of Template
 	 *
@@ -49,7 +51,7 @@ use mnhcc\ml\classes as classes;
 				{
 					try {
 						$buffer[$args['type']][$args['name']] = $this->getBuffer($args['type'], $args['name'], $args['attribs']);
-					} catch (classes\exception\RenderException $exc) {
+					} catch (Exception\RenderException $exc) {
 						if (!$this->isError()) {
 							$this->error(404, $exc->getMessage());
 						}

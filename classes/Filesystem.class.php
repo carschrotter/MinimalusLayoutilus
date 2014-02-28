@@ -1,6 +1,26 @@
 <?php
 
-namespace mnhcc\ml\classes; {
+/*
+ * Copyright (C) 2013 Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>.
+ *
+ * This library is free software; you can redistribute it and/or
+ * modify it under the terms of the GNU Lesser General Public
+ * License as published by the Free Software Foundation; either
+ * version 2.1 of the License, or (at your option) any later version.
+ *
+ * This library is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ * Lesser General Public License for more details.
+ *
+ * You should have received a copy of the GNU Lesser General Public
+ * License along with this library; if not, write to the Free Software
+ * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+ * MA 02110-1301  USA
+ */
+
+namespace mnhcc\ml\classes;
+{
 
     /**
      * Default class for classes in mnhcc namespace implement this functions
@@ -10,55 +30,55 @@ namespace mnhcc\ml\classes; {
      * @copyright (c) 2012, Michael Hegenbarth
      * @license GPL  
      */
-    class Filesystem {
+    abstract class Filesystem {
 
-        /**
-         * 
-         * @param string $filename
-         * @return bool
-         */
-        public static function fileExists($filename) {
-            return \file_exists($filename);
-        }
+	/**
+	 * 
+	 * @param string $filename
+	 * @return bool
+	 */
+	public static function fileExists($filename) {
+	    return \file_exists($filename);
+	}
 
-        /**
-         * Given a string containing a directory, this function will return the number of bytes available on the corresponding filesystem or disk partition.
-         * @param string $directory A directory of the filesystem or disk partition.
-         * @return float Returns the number of available bytes as a float or FALSE on failure.
-         */
-        public static function diskFreeSpace($directory) {
-            return \disk_free_space($directory);
-        }
+	/**
+	 * Given a string containing a directory, this function will return the number of bytes available on the corresponding filesystem or disk partition.
+	 * @param string $directory A directory of the filesystem or disk partition.
+	 * @return float Returns the number of available bytes as a float or FALSE on failure.
+	 */
+	public static function diskFreeSpace($directory) {
+	    return \disk_free_space($directory);
+	}
 
-        /**
-         * Given a string containing a directory, this function will return the total number of bytes on the corresponding filesystem or disk partition.
-         * @param string $directory A directory of the filesystem or disk partition.
-         * @return float Returns the total number of bytes as a float or FALSE on failure.
-         */
-        public static function diskTotalSpace($directory) {
-            return disk_total_space($directory);
-        }
+	/**
+	 * Given a string containing a directory, this function will return the total number of bytes on the corresponding filesystem or disk partition.
+	 * @param string $directory A directory of the filesystem or disk partition.
+	 * @return float Returns the total number of bytes as a float or FALSE on failure.
+	 */
+	public static function diskTotalSpace($directory) {
+	    return disk_total_space($directory);
+	}
 
-        /**
-         * Given a string containing a directory, this function will return a arra whit the total number of bytes and number of bytes available on the corresponding filesystem or disk partition.
-         * @param string $directory A directory of the filesystem or disk partition.
-         * @return array Returns a array whit the total number of bytes as a float or FALSE on failure. 
-         */
-        public static function diskSpace($directory) {
-            return ['free' => self::diskFreeSpace($directory), 'total' => self::diskTotalSpace($directory),];
-        }
+	/**
+	 * Given a string containing a directory, this function will return a arra whit the total number of bytes and number of bytes available on the corresponding filesystem or disk partition.
+	 * @param string $directory A directory of the filesystem or disk partition.
+	 * @return array Returns a array whit the total number of bytes as a float or FALSE on failure. 
+	 */
+	public static function diskSpace($directory) {
+	    return ['free' => self::diskFreeSpace($directory), 'total' => self::diskTotalSpace($directory),];
+	}
 
-        /**
-         * 
-         * @param string $path
-         * @param string $suffix (optional)
-         * @return string
-         */
-        public static function basename($path, $suffix, $php4 = false) {
-            if ($php4)
-                $path = rtrim($path, $suffix);
-            return \basename($path, $suffix);
-        }
+	/**
+	 * 
+	 * @param string $path
+	 * @param string $suffix (optional)
+	 * @return string
+	 */
+	public static function basename($path, $suffix, $php4 = false) {
+	    if ($php4)
+		$path = rtrim($path, $suffix);
+	    return \basename($path, $suffix);
+	}
 
 //basename
 //chgrp
