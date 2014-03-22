@@ -27,9 +27,14 @@ namespace mnhcc\ml\classes\Exception {
 	\mnhcc\ml\interfaces,
 	\mnhcc\ml\classes\Exception;
 
-    class ErrorException extends \ErrorException implements \JsonSerializable, interfaces\MNHcC, interfaces\Exception {
-
+    class ErrorException extends \ErrorException implements  interfaces\Exception{
+	
 	use traits\Exception;
+//	use traits\MNHcC, 
+//	    traits\NoInstances,
+//	    traits\Exception{
+//		traits\MNHcC::__toString insteadof traits\Exception;
+//	    }
 
 	public function __construct($message, $code, $severity, $filename, $lineno, $previous = null) {
 	    parent::__construct($message, $code, $severity, $filename, $lineno, $previous);
