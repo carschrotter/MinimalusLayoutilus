@@ -72,7 +72,7 @@ namespace mnhcc\ml\classes {
          * extensions for the autoloading types (class, trait, interfaces, ... )
          * @var array
          */
-        protected static $_extentions = [ 'default' => '.php', self::TYPE_CLASS => '.class.php', self::TYPE_TRAIT => '.trait.php', self::TYPE_INTERFACE => '.interface.php'];
+        protected static $_extensions = [ 'default' => '.php', self::TYPE_CLASS => '.class.php', self::TYPE_TRAIT => '.trait.php', self::TYPE_INTERFACE => '.interface.php'];
 
         /**
          *
@@ -173,8 +173,8 @@ namespace mnhcc\ml\classes {
          * extensions for the autoloading types (class, trait and interfaces ) 
          * @return array
          */
-        public static function getExtentions() {
-            return self::$_extentions;
+        public static function getExtensions() {
+            return self::$_extensions;
         }
 
         public static function setDefineLocation($name, $path) {
@@ -212,18 +212,18 @@ namespace mnhcc\ml\classes {
         /**
          * 
          * @param string $name the type name for example "classes", "traits" or "interfaces"
-         * @param string $extentions the extention z.B ".class.php"
+         * @param string $extension the extension e.g. ".class.php"
          */
-        public static function setExtention($name, $extentions) {
-            self::$_extentions[$name] = $extentions;
+        public static function setExtension($name, $extension) {
+            self::$_extensions[$name] = $extension;
         }
 
         /**
-         * set the autload extentions and override the exitist
-         * @param array $extentions
+         * set the autoload extensions and override the existing
+         * @param array $extensions
          */
-        public static function setExtentions(array $extentions) {
-            self::$_extentions = $extentions;
+        public static function setExtensions(array $extensions) {
+            self::$_extensions = $extensions;
         }
 
         /**
@@ -332,11 +332,11 @@ namespace mnhcc\ml\classes {
         public static function initial() {
             if (!self::getRootNamespace())
 		self::setRootNamespace((defined('ROOTNAMESPACE') ? ROOTNAMESPACE : str_replace("\\classes", '', __NAMESPACE__) . NSS));
-	    $extentions = '';
-	    foreach (self::getExtentions() as $ext) {
-                $extentions .= $ext . ', ';
+	    $extensions = '';
+	    foreach (self::getExtensions() as $ext) {
+                $extensions .= $ext . ', ';
             }
-            spl_autoload_extensions($extentions);
+            spl_autoload_extensions($extensions);
             spl_autoload_register(__CLASS__ . '::namespaceLoader', true);
             spl_autoload_register(__CLASS__ . '::classLoader', true);
 	    spl_autoload_register(__CLASS__ . '::loadCheck', true);
@@ -390,7 +390,7 @@ namespace mnhcc\ml\classes {
 		    $result = require_once($config['root'] . DS . $config['init']);
 		} else {
 		    foreach ($config['classes'] as $class => $path) {
-			$result = reqire_once($config['root'] . DS . $path);
+			$result = require_once($config['root'] . DS . $path);
 		   }
 		}
 		return $result;
@@ -489,7 +489,7 @@ namespace mnhcc\ml\classes {
                 foreach ($parts as $folder) {
                     $namespacePath .= $folder . DS;
                 }
-                $ext = self::_getExtentionFN($name, [], $type);
+                $ext = self::_getExtensionFN($name, [], $type);
 
                 foreach (self::getIncludePaths() as $namespace => $setting) {
                     if (!$setting['using_default']) {
@@ -544,7 +544,7 @@ namespace mnhcc\ml\classes {
             $parts = explode(NSS, $key);
             $class = array_pop($parts);
 	    $classfiles = [];
-            $classfiles[] = self::getRootNamespace() . DS . $class . self::getExtentions()['class'];
+            $classfiles[] = self::getRootNamespace() . DS . $class . self::getExtensions()['class'];
 	    $classfiles[] = self::getRootNamespace() . DS . $class . php;
 	    foreach ($classfiles as $classfile) {
 		if (file_exists($classfile)) {
@@ -570,18 +570,18 @@ namespace mnhcc\ml\classes {
 	}
 
 	/**
-         * Get the Extention from Type-Identifierf in the Namespace
+         * Get the Extension from Type-Identifier in the Namespace
          * @param string $name the namespace
          * @param array $keys overides for self::getNamespaceTypeIdentifiers()
-         * @return string the extention .php, .class.php, ...
+         * @return string the extension .php, .class.php, ...
          */
-        protected static function _getExtentionFN($name, array $keys = [], $type_identifier = false) {
+        protected static function _getExtensionFN($name, array $keys = [], $type_identifier = false) {
             $keys = array_merge(self::getNamespaceTypeIdentifiers(), $keys);
             $type_identifier = ($type_identifier) ? $type_identifier : self::getTypeIdentifierNamespacePart($name, $keys);
             if ($type_identifier && key_exists($type_identifier, $keys)) {
-                return self::getExtentions()[$keys[$type_identifier]];
+                return self::getExtensions()[$keys[$type_identifier]];
             }
-            return self::getExtentions()['default'];
+            return self::getExtensions()['default'];
         }
 	
         /**

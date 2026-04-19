@@ -5,3 +5,9 @@
 /nbproject/private/
 /assets/
 /docu
+
+# Composer
+/vendor/
+
+# DDEV (generated files are handled by .ddev/.gitignore)
+/.ddev/config.local.yaml

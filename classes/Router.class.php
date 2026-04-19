@@ -87,7 +87,7 @@ namespace mnhcc\ml\classes {
 	    $last = &$this->_path[count($this->_path) - 1];
 	    $lastsplit = explode('.', $last);
 	    $last = \array_shift($lastsplit);
-	    $this->extention = $lastsplit;
+	    $this->extension = $lastsplit;
 	    $this->_parmsURI = $this->_path;
 	    $control = ArrayHelper::shift($this->_parmsURI);
 	    $action =  ArrayHelper::shift($this->_parmsURI);

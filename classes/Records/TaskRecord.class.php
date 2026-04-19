@@ -1,5 +1,5 @@
 <?php
-namespace mnhcc\ml\classes\records;
+namespace mnhcc\ml\classes\Records;
 use mnhcc\ml as root;
 use mnhcc\ml\classes as classes;
 

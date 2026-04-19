@@ -1,6 +1,6 @@
 <?php
 
-namespace mnhcc\ml\classes\template {
+namespace mnhcc\ml\classes\Template {
 
     use mnhcc\ml\classes;
 
@@ -114,18 +114,18 @@ namespace mnhcc\ml\classes\template {
 	}
 
 	public function getCSSPath($href, $auto_complete = true) {
-	    $extention = (bool) (count(explode('.', $href)) - 1);
+	    $extension =(bool) (count(explode('.', $href)) - 1);
 	    if ($auto_complete) {
-		return $this->base() . $this->getCSSLocation() . $href . (($extention) ? '' : '.css');
+		return $this->base() . $this->getCSSLocation() . $href . (($extension) ? '' : '.css');
 	    } else {
 		return $href;
 	    }
 	}
 
 	public function getScriptPath($src, $auto_complete = true) {
-	    $extention = \array_shift(\explode('.', $src));
+	    $extension =\array_shift(\explode('.', $src));
 	    if ($auto_complete) {
-		return $this->base() . $this->getCSSLocation() . $src . ($extention) ? '' : '.js';
+		return $this->base() . $this->getCSSLocation() . $src . ($extension) ? '' : '.js';
 	    } else {
 		return $src;
 	    }
@@ -170,7 +170,7 @@ namespace mnhcc\ml\classes\template {
 	/**
 	 * Fetch the template, and initialise the params
 	 * @param   array  $params  Parameters to determine the template
-	 * @return \mnhcc\ml\classes\template\TemplateHtml instance of $this to allow chaining
+	 * @return \mnhcc\ml\classes\Template\TemplateHtml instance of $this to allow chaining
 	 * @from Joomla   11.1
 	 */
 	protected function _fetchTemplate($params = array()) {
@@ -206,7 +206,7 @@ namespace mnhcc\ml\classes\template {
 
 	/**
 	 * Parse a document template
-	 * @return \mnhcc\ml\classes\template\TemplateHtml instance of $this to allow chaining
+	 * @return \mnhcc\ml\classes\Template\TemplateHtml instance of $this to allow chaining
 	 * @from foomla   11.1
 	 */
 	protected function _parseTemplate() {

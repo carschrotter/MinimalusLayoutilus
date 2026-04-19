@@ -21,7 +21,7 @@
 
 /**
  * The initscript
- * load Bootstraping , Erorrohandling,  Configs and Library
+ * load Bootstrapping, Error Handling, Configs and Library
  */
 
 namespace mnhcc\ml {
@@ -29,7 +29,7 @@ namespace mnhcc\ml {
     use mnhcc\ml\classes;
 
     /**
-     * NameSpace Seperator
+     * Namespace Separator
      */
     const NSS = '\\';
 
@@ -44,7 +44,7 @@ namespace mnhcc\ml {
     define('\\mnhcc\\ml\\br', "<br />" . n);
 
     /**
-     * php file extention
+     * php file extension
      */
     const php = ".php";
 
@@ -58,7 +58,7 @@ namespace mnhcc\ml {
 	die('The program requires PHP ' . $version . ' or higher! PHP ' . PHP_VERSION . '  installed.');
     }
     if (!\defined("\\mnhcc\\ml\\INDEX")) { //no direckt call
-	die(INDEX . 'Define constant "INDEX" in the "\\mnhcc\\ml\\" namespace befor run Programm!');
+	die(INDEX . 'Define constant "INDEX" in the "\\mnhcc\\ml\\" namespace before run Programm!');
     }
 
     define('\\mnhcc\\ml\\STARTTIME', \microtime(true)); //for benchmark and analytic
@@ -73,7 +73,7 @@ namespace mnhcc\ml {
 
 
     /**
-     * NameSpace Seperator
+     * Namespace Separator
      */
     define("NSS", '\\');
     /**
@@ -110,8 +110,8 @@ namespace mnhcc\ml {
 
     loadConfs(['load']);
 
-    define('mnhcc\\ml\\APPLICATIONNAMESPACE', (key_exists('provider', $config) && key_exists('aplication', $config)) ?
-		    classes\BootstrapHandler::makeClassName($config['provider'], $config['aplication']) :
+    define('mnhcc\\ml\\APPLICATIONNAMESPACE', (key_exists('provider', $config) && key_exists('application', $config)) ?
+		    classes\BootstrapHandler::makeClassName($config['provider'], $config['application']) :
 		    false
     );
 

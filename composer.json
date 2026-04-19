@@ -1,0 +1,31 @@
+{
+    "name": "mnhcc/minimalus-layoutilus",
+    "description": "A simple and light framework for MVC Concept and Templating",
+    "type": "library",
+    "license": "LGPL-2.1-or-later",
+    "authors": [
+        {
+            "name": "Michael Hegenbarth (carschrotter)",
+            "email": "mnh@mn-hegenbarth.de"
+        }
+    ],
+    "require": {
+        "php": ">=5.4",
+        "ext-json": "*",
+        "ext-pdo": "*",
+        "ext-imap": "*",
+        "barbushin/php-imap": "^1.0"
+    },
+    "require-dev": {
+        "raveren/kint": "^1.0",
+        "firephp/firephp-core": "~0.3"
+    },
+    "autoload": {
+        "classmap": [
+            "classes/",
+            "interfaces/",
+            "traits/"
+        ]
+    },
+    "minimum-stability": "stable"
+}

@@ -9,7 +9,7 @@
 namespace mnhcc\ml\classes\Config {
 use mnhcc\ml\classes\Config;
     /**
-     * AplicationConfig
+     * ApplicationConfig
      *
      * @author MNHcC  - Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>
      * @copyright 2014, MNHcC  - Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>
@@ -23,7 +23,7 @@ use mnhcc\ml\classes\Config;
 	    $this->set('paths', ['root' => __DIR__]);
 	    $parts = explode(NSS, static::getCalledClass());
 	    $this['provider'] = $parts[0];
-	    $this['aplication'] = $parts[1];
+	    $this['application'] = $parts[1];
 	   
 	}
     }

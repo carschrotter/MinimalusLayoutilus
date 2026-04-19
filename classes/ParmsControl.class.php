@@ -83,7 +83,7 @@ namespace mnhcc\ml\classes {
 	}
 
 	/**
-	 * Get the requested action from Bootstraping in Program.
+	 * Get the requested action from Bootstrapping in Program.
 	 * <code>
 	 * <?php
 	 * $parmsControl->getAction(); //index for example;
@@ -96,7 +96,7 @@ namespace mnhcc\ml\classes {
 	}
 
 	/**
-	 * Get the requested name of control from Bootstraping in Program.
+	 * Get the requested name of control from Bootstrapping in Program.
 	 * <code>
 	 * <?php
 	 * $parmsControl->getName(); //return index for example;

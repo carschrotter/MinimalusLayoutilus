@@ -1,5 +1,5 @@
 <?php
-namespace mnhcc\ml\classes\template{
+namespace mnhcc\ml\classes\Template{
     
 	use mnhcc\ml\classes,
 	mnhcc\ml\classes\Exception as Exception;

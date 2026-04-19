@@ -85,7 +85,7 @@ use mnhcc\ml\interfaces as interfaces;
 //            $last = &$this->path[count($this->path) - 1];
 //            $lastsplit = explode('.', $last);
 //            $last = \array_shift($lastsplit);
-//            $this->extention = $lastsplit;
+//            $this->extension = $lastsplit;
 //            foreach ($this->parmsURI as $value) {
 //                list($key, $arg) = explode("|", $value);
 //                if ($key && $arg) {
@@ -100,8 +100,8 @@ use mnhcc\ml\interfaces as interfaces;
 //                $this->parmsURI['action'] = $this->path[1];
 //        }
 
-	public function getExtention($default = '') {
-	    $ext = (isset($this->_parmsURI['extention'])) ? end($this->_parmsURI['extention']) : null;
+	public function getExtension($default = '') {
+	    $ext = (isset($this->_parmsURI['extension'])) ? end($this->_parmsURI['extension']) : null;
 	    return ($ext) ? $ext : $default;
 	}
 

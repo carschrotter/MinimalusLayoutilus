@@ -1,6 +1,6 @@
 <?php
 
-namespace mnhcc\ml\classes\records;
+namespace mnhcc\ml\classes\Records;
 
 use mnhcc\ml\traits as traits;
 use mnhcc\ml\classes as classes;

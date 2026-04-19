@@ -29,7 +29,7 @@ namespace mnhcc\ml\classes {
      * <p>Implement this magic functions:
      * <ul>
      * <li><b>___onLoaded()</b> fire after the class is loaded</li>
-     * <li><b>___require() fire after loaded and get array of require classes and extention for main functionality </b></li>
+     * <li><b>___require() fire after loaded and get array of require classes and extension for main functionality </b></li>
      * </ul>
      * </p>
      * @author Michael Hegenbarth (carschrotter)

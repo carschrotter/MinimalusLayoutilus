@@ -5,7 +5,7 @@ use \mnhcc\ml;
 {
 
     /**
-     * The interface to render the aplication to the output format
+     * The interface to render the application to the output format
      * parse the templatefile and set results
 	 *
 	 * @author Michael Hegenbarth (carschrotter)
@@ -23,9 +23,9 @@ use \mnhcc\ml;
         protected static $_defDocType = 'html';
 
         /**
-         * the aliases for extention
+         * the aliases for extension
          * $key                 =>  $value
-         * the used extention       the alias
+         * the used extension       the alias
          * @var array 
          */
         protected static $_extAlias = ['php' => 'html', 'htm' => 'html', 'xhtml' => 'html'];
@@ -132,7 +132,7 @@ use \mnhcc\ml;
         }
 
         /**
-         * Get the doctype from extention example: php to Html
+         * Get the doctype from extension example: php to Html
          * @param string $ext
          * @return string
          */

@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace mnhcc\ml\classes\template;
+namespace mnhcc\ml\classes\Template;
 use \mnhcc\ml\classes as classes;
 /**
  * Description of EventParms

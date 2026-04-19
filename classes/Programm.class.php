@@ -191,7 +191,7 @@ namespace mnhcc\ml\classes {
 	    $this->setControlClass(BootstrapHandler::makeClassName(
 			    BootstrapHandler::getRootNamespace(), BootstrapHandler::getClassNamespaceRoot(), 'Control', 'Control' . $control));
 
-	    $this->docType = Template::getDocTypeFromExt($this->_parm->getExtention('html'));
+	    $this->docType = Template::getDocTypeFromExt($this->_parm->getExtension('html'));
 
 	    $root_template = BootstrapHandler::addRootNamespace(BootstrapHandler::makeClassName('template', 'Template'));
 
