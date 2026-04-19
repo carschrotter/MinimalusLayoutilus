@@ -54,7 +54,7 @@ use \mnhcc\ml;
          */
         public function __construct() {
 	    self::setInstance(self::DEFAULTINSTANCE, $this);
-	    EventManager::raise('templateCreated', new template\EventParms($this, []));
+	    EventManager::raise('templateCreated', new Template\EventParms($this, []));
         }
 
         /**

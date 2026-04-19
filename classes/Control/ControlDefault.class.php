@@ -44,6 +44,9 @@ namespace mnhcc\ml\classes\Control {
 	public function getModulDefault($action, $method) {
 	    return '';
 	}
+
+	public function actionIndex() {
+	}
     }
 
 }

@@ -193,7 +193,7 @@ namespace mnhcc\ml\classes {
 
 	    $this->docType = Template::getDocTypeFromExt($this->_parm->getExtension('html'));
 
-	    $root_template = BootstrapHandler::addRootNamespace(BootstrapHandler::makeClassName('template', 'Template'));
+	    $root_template = BootstrapHandler::addRootNamespace(BootstrapHandler::makeClassName('Template', 'Template'));
 
 	    $template = $root_template . ucfirst($this->docType);
 

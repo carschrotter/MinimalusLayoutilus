@@ -61,8 +61,8 @@ namespace mnhcc\ml\traits {
 	    return false;
 	}
 
-	public static function Prototype(){
-	    return $_prototype;
+	public function Prototype(){
+	    return $this->_prototype;
 	}
 	
 	public static function __callStatic($name, $arguments) {

@@ -341,12 +341,12 @@ EOF;
 
 	    if ($exception === null) {
 		$exception = $this->getLastException(true);
-	    }	   
-	    if (Helper::classExists('EventManager', true, false)) {
-		EventManager::raise('shutdown', new EventParms\ExceptionEventParms(['exception' => $exception])) ;
 	    }
 	    if (!\is_object($exception)) {
 		return exit();
+	    }
+	    if (Helper::classExists('EventManager', true, false)) {
+		EventManager::raise('shutdown', new EventParms\ExceptionEventParms(['exception' => $exception])) ;
 	    }
 	    $this->isJson(false);
 	    if (self::isExit($exception->getCode())) {

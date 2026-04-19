@@ -43,7 +43,7 @@ namespace mnhcc\ml\traits {
 	}
 
 	public static function isInit() {
-	    throw new Exception('Call to undefined method ' . $this->getClass() . '::' . __FUNCTION__ . '()', Exception::noMethodImplement);
+	    throw new Exception('Call to undefined method ' . get_called_class() . '::' . __FUNCTION__ . '()', Exception::noMethodImplement);
 	}
 
     }

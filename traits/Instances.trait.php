@@ -41,7 +41,7 @@ namespace mnhcc\ml\traits {
 	    $this->_instanceID = $instanceID;
 	}
 	
-	public function issetInstance($instance = self::DEFAULTINSTANCE) {
+	public static function issetInstance($instance = self::DEFAULTINSTANCE) {
 	    if(classes\ArrayHelper::keyExists($instance, self::$_instances)) {
 		return ( \is_object(self::$_instances[$instance]) && (self::$_instances[$instance] instanceof self) );
 	    } 

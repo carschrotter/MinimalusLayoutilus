@@ -14,7 +14,7 @@ namespace mnhcc\ml\classes\EventParms {
     class ExceptionEventParms extends EventParms {
 	
 	/**
-	 * @param array $parms <p>The key "exception" is mandatory and must be of type Exceptoion.</p>
+	 * @param array $parms <p>The key "exception" is mandatory and must be of type Exception.</p>
 	 * @throws Exception\InvalidArgumentException
 	 */
 	public function __construct($parms = []) {
@@ -30,7 +30,7 @@ namespace mnhcc\ml\classes\EventParms {
 	 * @return \Exception
 	 */
 	public function getException() {
-	    return $this->$this->_parms['exception'];
+	    return $this->_parms['exception'];
 	}
     }
 
