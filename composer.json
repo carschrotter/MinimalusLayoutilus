@@ -1,7 +1,7 @@
 {
     "name": "mnhcc/minimalus-layoutilus",
-    "description": "A simple and light framework for MVC Concept and Templating",
-    "type": "library",
+    "description": "Minimalus Layoutilus — example project using the mnhcc/ml-* framework packages",
+    "type": "project",
     "license": "LGPL-2.1-or-later",
     "authors": [
         {
@@ -14,6 +14,9 @@
         "ext-json": "*",
         "ext-pdo": "*",
         "ext-imap": "*",
+        "mnhcc/ml-core": "^0.9",
+        "mnhcc/ml-bugcatcher": "^0.9",
+        "mnhcc/ml-mvc": "^0.9",
         "barbushin/php-imap": "^1.0"
     },
     "require-dev": {
