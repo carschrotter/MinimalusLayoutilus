@@ -99,12 +99,6 @@ namespace mnhcc\ml {
 	$config = array_merge((array) $config, (array) json_decode(file_get_contents(ROOT_PATH . DS . 'config.json')));
     }
 
-    if (!file_exists(MNHCC_PATH . DS . 'classes' . DS . 'BootstrapHandler.class' . php)) {
-	die('No BootstrapHandler found!' . n . 'Check constant "MNHCC_PATH"');
-    }
-
-    require_once(MNHCC_PATH . DS . 'classes' . DS . 'BootstrapHandler.class' . php);
-
     classes\BootstrapHandler::addExtensionDependency('PDO');
     classes\BootstrapHandler::initial();
 
