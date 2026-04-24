@@ -13,22 +13,35 @@
         "php": ">=5.4",
         "ext-json": "*",
         "ext-pdo": "*",
-        "ext-imap": "*",
-        "mnhcc/ml-core": "^0.9",
-        "mnhcc/ml-bugcatcher": "^0.9",
-        "mnhcc/ml-mvc": "^0.9",
-        "barbushin/php-imap": "^1.0"
+        "mnhcc/ml-core": "*",
+        "mnhcc/ml-bugcatcher": "*",
+        "mnhcc/ml-mvc": "*"
     },
-    "require-dev": {
-        "raveren/kint": "^1.0",
-        "firephp/firephp-core": "~0.3"
-    },
+    "repositories": [
+        {
+            "type": "path",
+            "url": "../ml-core"
+        },
+        {
+            "type": "path",
+            "url": "../ml-bugcatcher"
+        },
+        {
+            "type": "path",
+            "url": "../ml-mvc"
+        }
+    ],
     "autoload": {
         "classmap": [
-            "classes/",
-            "interfaces/",
-            "traits/"
+            "classes/"
         ]
     },
-    "minimum-stability": "stable"
+    "minimum-stability": "dev",
+    "require-dev": {
+        "kint-php/kint": "4.x-dev",
+        "phpunit/phpunit": "^5.7"
+    },
+    "scripts": {
+        "test": "vendor/bin/phpunit"
+    }
 }

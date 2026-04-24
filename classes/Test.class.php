@@ -18,34 +18,39 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
  * MA 02110-1301  USA
  */
+
 namespace mnhcc\ml\classes {
-/**
- * test
- *
- * @author MNHcC Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>
- * @copyright 2013, MNHcC Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>
- * @license lgpl21
- * @remote.connection Expression remote is undefined on line 17, column 25 in Templates/Scripting/PHPClass.php. Expression project.remote is undefined on line 17, column 46 in Templates/Scripting/PHPClass.php. 
- */
-    class Test {
-	/**
-	 *
-	 * @var static 
-	 */
-	public static $supermario = [];
-	
-	public function __destruct() {
-	    \Kint::dump(self::$supermario['supermario']);
-	    self::$supermario['supermario'] = new self();
-	}
-	
-	public static function &supermario() {
-	    self::$supermario['supermario'] = new self();
-	    return self::$supermario['supermario'];
-	}
-	
-	public function __toString() {
-	    return (string) '';
-	}
+    /**
+     * Test
+     *
+     * @author MNHcC Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>
+     * @copyright 2013, MNHcC Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>
+     * @license lgpl21
+     * @remote.connection Expression remote is undefined on line 17, column 25 in Templates/Scripting/PHPClass.php. Expression project.remote is undefined on line 17, column 46 in Templates/Scripting/PHPClass.php.
+     */
+    class Test
+    {
+        /**
+         *
+         * @var static
+         */
+        public static $supermario = [];
+
+        public function __destruct()
+        {
+            \Kint::dump(self::$supermario['supermario']);
+            self::$supermario['supermario'] = new self();
+        }
+
+        public static function &supermario()
+        {
+            self::$supermario['supermario'] = new self();
+            return self::$supermario['supermario'];
+        }
+
+        public function __toString()
+        {
+            return (string) '';
+        }
     }
 }

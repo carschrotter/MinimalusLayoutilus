@@ -1,9 +1,8 @@
 <?php
 
 namespace mnhcc\ml\classes\View {
-
-    use mnhcc\ml\classes,
-        mnhcc\ml\classes\Control\ControlIndex;
+    use mnhcc\ml\classes;
+    use mnhcc\ml\classes\Control\ControlIndex;
 
     /**
      * Default index view — renders the localised project introduction.
@@ -11,9 +10,10 @@ namespace mnhcc\ml\classes\View {
      * @author Michael Hegenbarth (carschrotter)
      * @package MinimalusLayoutilus
      */
-    class ViewIndexHtml extends classes\View {
-
-        public function renderComponent(classes\ParmsControl $parm) {
+    class ViewIndexHtml extends classes\View
+    {
+        public function renderComponent(classes\ParmsControl $parm)
+        {
             $i18n = ControlIndex::getI18n();
             ob_start();
             ?>
@@ -60,10 +60,9 @@ namespace mnhcc\ml\classes\View {
             return $content;
         }
 
-        public function __call($name, $args) {
+        public function __call($name, $args)
+        {
             return "<!-- no View $name -->";
         }
-
     }
-
 }

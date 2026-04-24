@@ -1,0 +1,31 @@
+{
+  "permissions": {
+    "allow": [
+      "Read(//home/carschrotter/projects/bobi-startpage/library/barbushin/**)",
+      "Read(//home/carschrotter/projects/bobi-startpage/library/FirePHPCore-0.3.2/**)",
+      "Read(//home/carschrotter/projects/bobi-startpage/library/phpclasses.org/**)",
+      "Read(//home/carschrotter/projects/bobi-startpage/library/kint-master/**)",
+      "mcp__ollama__local_code_review",
+      "mcp__ollama__local_code_task",
+      "Read(//home/carschrotter/projects/ml-bugcatcher/classes/**)",
+      "Read(//home/carschrotter/projects/ml-mvc/classes/**)",
+      "Read(//home/carschrotter/projects/ml-core/classes/**)",
+      "Read(//home/carschrotter/projects/ml-core/traits/**)",
+      "Read(//home/carschrotter/projects/ml-core/interfaces/**)",
+      "Read(//home/carschrotter/projects/ml-bugcatcher/**)",
+      "Read(//home/carschrotter/projects/ml-mvc/**)",
+      "Bash(git -C /home/carschrotter/projects/ml-core tag v0.9.0)",
+      "Bash(git -C /home/carschrotter/projects/ml-bugcatcher tag v0.9.0)",
+      "Bash(git -C /home/carschrotter/projects/ml-mvc tag v0.9.0)"
+    ],
+    "additionalDirectories": [
+      "/home/carschrotter/projects/ml-mvc/classes",
+      "/home/carschrotter/projects/ml-bugcatcher/classes",
+      "/home/carschrotter/projects/ml-core/classes",
+      "/home/carschrotter/projects/ml-core/traits",
+      "/home/carschrotter/projects/ml-core",
+      "/home/carschrotter/projects/ml-bugcatcher",
+      "/home/carschrotter/projects/ml-mvc"
+    ]
+  }
+}

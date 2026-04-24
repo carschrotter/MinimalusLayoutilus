@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<phpunit bootstrap="tests/bootstrap.php"
+         colors="true"
+         verbose="true"
+         stopOnError="false"
+         stopOnFailure="false">
+    <testsuites>
+        <testsuite name="ml-core">
+            <directory>vendor/mnhcc/ml-core/tests/Unit</directory>
+        </testsuite>
+        <testsuite name="ml-bugcatcher">
+            <directory>vendor/mnhcc/ml-bugcatcher/tests/Unit</directory>
+        </testsuite>
+        <testsuite name="ml-mvc">
+            <directory>vendor/mnhcc/ml-mvc/tests/Unit</directory>
+        </testsuite>
+    </testsuites>
+</phpunit>

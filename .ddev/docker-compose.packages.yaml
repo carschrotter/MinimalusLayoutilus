@@ -1,0 +1,6 @@
+services:
+  web:
+    volumes:
+      - "${DDEV_APPROOT}/../ml-core:/var/www/ml-core:ro"
+      - "${DDEV_APPROOT}/../ml-bugcatcher:/var/www/ml-bugcatcher:ro"
+      - "${DDEV_APPROOT}/../ml-mvc:/var/www/ml-mvc:ro"

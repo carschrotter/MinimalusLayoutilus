@@ -1,7 +1,11 @@
 <?php
+
 namespace mnhcc\ml;
+
 use mnhcc\ml\classes\Control\ControlIndex;
-if (!\defined("\\mnhcc\\ml\\INDEX")) die();
+if (!\defined("\\mnhcc\\ml\\INDEX")) {
+    die();
+}
 $lang = ControlIndex::getLang();
 ?>
 <!DOCTYPE html>
@@ -47,7 +51,7 @@ $lang = ControlIndex::getLang();
     <mnhccTemplate:include type="component" name="content" renderType="html" />
     <hr>
     <footer>
-        <p>&copy; <?= date('Y') ?> Michael Hegenbarth (carschrotter) &mdash; LGPL 2.1</p>
+        <p>&copy; 2013-<?= date('Y') ?> Michael Hegenbarth (carschrotter) &mdash; LGPL 2.1</p>
     </footer>
 </div>
 

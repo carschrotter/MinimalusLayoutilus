@@ -19,19 +19,17 @@
  * MA 02110-1301  USA
  */
 
-namespace mnhcc\ml\classes {
-use \mnhcc\ml\interfaces,
-    \mnhcc\ml\traits,
-    \mnhcc\ml\classes\Exception;
+namespace mnhcc\ml\classes {    
+    
     /**
-     * newPHPClass
+     * Example
      *
      * @author MNHcC  - Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>
      * @copyright 2013, MNHcC  - Michael Hegenbarth (carschrotter) <mnh@mn-hegenbarth.de>
      * @license lgpl21
      */
-    class Example extends MNHcC{
-	use \mnhcc\ml\traits\Instances;
+    class Example extends MNHcC
+    {
+        use \mnhcc\ml\traits\Instances;
     }
-
 }

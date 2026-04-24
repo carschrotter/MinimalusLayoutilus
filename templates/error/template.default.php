@@ -1,5 +1,8 @@
 <?php
-if(!\defined("\\mnhcc\\ml\\INDEX")) die();
+
+if (!\defined("\\mnhcc\\ml\\INDEX")) {
+    die();
+}
 switch ($_GET['error']) {
     case 404:
         echo '
