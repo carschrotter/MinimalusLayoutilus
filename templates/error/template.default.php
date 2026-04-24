@@ -3,7 +3,7 @@
 if (!\defined("\\mnhcc\\ml\\INDEX")) {
     die();
 }
-switch ($_GET['error']) {
+switch ($code) {
     case 404:
         echo '
 <h1 class="nospace"><a id="">404</a></h1>
