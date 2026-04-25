@@ -1,10 +1,10 @@
 # Minimalus Layoutilus
 
-*Leichtgewichtige PHP-Template-Engine und MVC-Framework — ein moderner Ansatz der klassischen PHP-Include-Architektur der frühen 2000er.*
+*A lightweight PHP template engine and MVC framework — a modern take on the classic PHP include patterns of the early 2000s.*
 
-Minimalus Layoutilus verfolgt ein minimales Setup: statische Inhalte werden über ein strukturiertes Controller/View-System in anpassbare Templates eingefügt. Der ironisch lateinisch anmutende Name steht Programm — minimal in der Konfiguration, maximal in der Anpassbarkeit.
+Minimalus Layoutilus follows a minimal setup philosophy: static content is injected into customizable templates through a structured Controller/View system. The ironically Latin-sounding name says it all — minimal in configuration, maximum in adaptability.
 
-## Schnellstart
+## Quick Start
 
 ```bash
 composer create-project mnhcc/minimalus-layoutilus myproject
@@ -13,38 +13,38 @@ ddev start
 ddev composer install
 ```
 
-## Voraussetzungen
+## Requirements
 
 - PHP ≥ 5.4, ext-json
 - [DDEV](https://ddev.readthedocs.io) (PHP 5.6, MariaDB, nginx)
-- Optional: ext-pdo (Datenbankzugriff), ext-imap (E-Mail-Features)
+- Optional: ext-pdo (database access), ext-imap (email features)
 
-## Framework-Pakete
+## Framework Packages
 
-| Paket | Beschreibung |
+| Package | Description |
 |---|---|
-| [mnhcc/ml-core](https://packagist.org/packages/mnhcc/ml-core) | Autoloader, Basisklassen, Helpers |
-| [mnhcc/ml-bugcatcher](https://packagist.org/packages/mnhcc/ml-bugcatcher) | Fehlerhandler, Events, Exceptions |
+| [mnhcc/ml-core](https://packagist.org/packages/mnhcc/ml-core) | Autoloader, base classes, helpers |
+| [mnhcc/ml-bugcatcher](https://packagist.org/packages/mnhcc/ml-bugcatcher) | Error handler, events, exceptions |
 | [mnhcc/ml-mvc](https://packagist.org/packages/mnhcc/ml-mvc) | Router, Control, View, Template |
 
-## Entwicklung (an den Framework-Paketen arbeiten)
+## Development (working on the framework packages)
 
-`ddev start` aktiviert automatisch den Git-Hook, der beim Commit `composer.json` aus den aktuellen Tags der Geschwister-Repos generiert:
+`ddev start` automatically activates the Git hook that generates `composer.json` from the current tags of sibling repos on every commit:
 
 ```bash
-ddev composer install   # nutzt composer.local.json mit Path-Repos zu ../ml-*
+ddev composer install   # uses composer.local.json with path repos to ../ml-*
 ddev test               # PHPUnit
 ```
 
-Ohne DDEV einmalig aktivieren: `git config core.hooksPath .githooks`
+Without DDEV, activate once: `git config core.hooksPath .githooks`
 
-## imap aktivieren
+## Enable imap
 
 ```bash
 cp .ddev/config.imap.yaml.dist .ddev/config.imap.yaml
 ddev restart
 ```
 
-## Lizenz
+## License
 
 [LGPL-2.1-or-later](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html) — Michael Hegenbarth (carschrotter)
