@@ -3,7 +3,14 @@
     "description": "Lightweight PHP template engine and MVC framework for building highly customizable websites with minimal setup",
     "type": "project",
     "license": "LGPL-2.1-or-later",
-    "keywords": ["template-engine", "mvc", "lightweight", "website", "php54"],
+    "keywords": [
+        "framework",
+        "template-engine", 
+        "mvc", 
+        "lightweight", 
+        "website", 
+        "php54"
+    ],
     "homepage": "https://github.com/carschrotter/MinimalusLayoutilus",
     "authors": [
         {
@@ -13,10 +20,6 @@
             "role": "Developer"
         }
     ],
-    "support": {
-        "issues": "https://github.com/carschrotter/MinimalusLayoutilus/issues",
-        "source": "https://github.com/carschrotter/MinimalusLayoutilus"
-    },
     "require": {
         "php": ">=5.4",
         "ext-json": "*",
@@ -31,11 +34,16 @@
         ]
     },
     "require-dev": {
+        "kint-php/kint": "^4.0",
         "phpunit/phpunit": "^5.7"
     },
     "scripts": {
         "test": "vendor/bin/phpunit"
     },
     "minimum-stability": "stable",
-    "prefer-stable": true
+    "prefer-stable": true,
+    "support": {
+        "issues": "https://github.com/carschrotter/MinimalusLayoutilus/issues",
+        "source": "https://github.com/carschrotter/MinimalusLayoutilus"
+    }
 }
