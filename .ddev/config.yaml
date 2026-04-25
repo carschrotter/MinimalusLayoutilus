@@ -11,8 +11,7 @@ database:
     version: "11.8"
 use_dns_when_possible: true
 composer_version: "2.2"
-webimage_extra_packages:
-    - php5.6-imap
+webimage_extra_packages: []
 web_environment:
     - USE_ZEND_ALLOC=0
     - COMPOSER=composer.local.json

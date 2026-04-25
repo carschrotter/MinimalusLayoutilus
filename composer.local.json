@@ -14,10 +14,13 @@
     "require": {
         "php": ">=5.4",
         "ext-json": "*",
-        "ext-pdo": "*",
         "mnhcc/ml-core": "*",
         "mnhcc/ml-bugcatcher": "*",
         "mnhcc/ml-mvc": "*"
+    },
+    "suggest": {
+        "ext-pdo": "Required for database access via the MVC layer",
+        "ext-imap": "Required for IMAP/email features"
     },
     "repositories": [
         {"type": "path", "url": "../ml-core"},

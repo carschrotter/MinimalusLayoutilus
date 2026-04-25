@@ -1,0 +1,6 @@
+# Optional: aktiviert php-imap in der DDEV-Umgebung.
+# Um imap zu aktivieren, diese Datei kopieren und umbenennen:
+#   cp .ddev/config.imap.yaml.dist .ddev/config.imap.yaml
+#   ddev restart
+webimage_extra_packages:
+    - php5.6-imap
