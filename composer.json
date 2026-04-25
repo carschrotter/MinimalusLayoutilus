@@ -1,9 +1,9 @@
 {
     "name": "mnhcc/minimalus-layoutilus",
-    "description": "Minimalus Layoutilus — example application and project template for the mnhcc/ml-* framework",
+    "description": "Lightweight PHP template engine and MVC framework for building highly customizable websites with minimal setup",
     "type": "project",
     "license": "LGPL-2.1-or-later",
-    "keywords": ["framework", "mvc", "template", "starter"],
+    "keywords": ["template-engine", "mvc", "lightweight", "website", "php54"],
     "homepage": "https://github.com/carschrotter/MinimalusLayoutilus",
     "authors": [
         {

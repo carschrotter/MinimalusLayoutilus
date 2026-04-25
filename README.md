@@ -1,42 +1,50 @@
 # Minimalus Layoutilus
 
-Example application and project template for the [mnhcc/ml-*](https://packagist.org/packages/mnhcc/) PHP framework.
+*Leichtgewichtige PHP-Template-Engine und MVC-Framework — ein moderner Ansatz der klassischen PHP-Include-Architektur der frühen 2000er.*
 
-## Create a new project
+Minimalus Layoutilus verfolgt ein minimales Setup: statische Inhalte werden über ein strukturiertes Controller/View-System in anpassbare Templates eingefügt. Der ironisch lateinisch anmutende Name steht Programm — minimal in der Konfiguration, maximal in der Anpassbarkeit.
+
+## Schnellstart
 
 ```bash
 composer create-project mnhcc/minimalus-layoutilus myproject
 cd myproject
 ddev start
+ddev composer install
 ```
 
-## Requirements
+## Voraussetzungen
 
-- PHP ≥ 5.4, ext-json, ext-pdo
-- [DDEV](https://ddev.readthedocs.io) (local environment, PHP 5.6, MariaDB, nginx)
+- PHP ≥ 5.4, ext-json
+- [DDEV](https://ddev.readthedocs.io) (PHP 5.6, MariaDB, nginx)
+- Optional: ext-pdo (Datenbankzugriff), ext-imap (E-Mail-Features)
 
-## Framework packages
+## Framework-Pakete
 
-| Package | Description |
+| Paket | Beschreibung |
 |---|---|
-| [mnhcc/ml-core](https://packagist.org/packages/mnhcc/ml-core) | Autoloader, base classes, helpers |
-| [mnhcc/ml-bugcatcher](https://packagist.org/packages/mnhcc/ml-bugcatcher) | Error handler, events, exceptions |
+| [mnhcc/ml-core](https://packagist.org/packages/mnhcc/ml-core) | Autoloader, Basisklassen, Helpers |
+| [mnhcc/ml-bugcatcher](https://packagist.org/packages/mnhcc/ml-bugcatcher) | Fehlerhandler, Events, Exceptions |
 | [mnhcc/ml-mvc](https://packagist.org/packages/mnhcc/ml-mvc) | Router, Control, View, Template |
 
-## Development (working on the framework packages)
+## Entwicklung (an den Framework-Paketen arbeiten)
 
-When developing the `ml-*` packages alongside this project, use `composer.local.json`
-which resolves packages from sibling directories (`../ml-core` etc.) instead of Packagist:
+`ddev start` aktiviert automatisch den Git-Hook, der beim Commit `composer.json` aus den aktuellen Tags der Geschwister-Repos generiert:
 
 ```bash
-make dev-install   # installs from ../ml-core, ../ml-bugcatcher, ../ml-mvc
-make dev-update    # updates from sibling dirs
-make dev-test      # runs the test suite
+ddev composer install   # nutzt composer.local.json mit Path-Repos zu ../ml-*
+ddev test               # PHPUnit
 ```
 
-Without `make`, use `COMPOSER=composer.local.json composer install` directly.
-The lock file for local development is `composer.local.lock` (gitignored).
+Ohne DDEV einmalig aktivieren: `git config core.hooksPath .githooks`
 
-## License
+## imap aktivieren
+
+```bash
+cp .ddev/config.imap.yaml.dist .ddev/config.imap.yaml
+ddev restart
+```
+
+## Lizenz
 
 [LGPL-2.1-or-later](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html) — Michael Hegenbarth (carschrotter)
