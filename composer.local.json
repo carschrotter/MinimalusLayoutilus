@@ -3,8 +3,6 @@
     "description": "Minimalus Layoutilus — example application and project template for the mnhcc/ml-* framework",
     "type": "project",
     "license": "LGPL-2.1-or-later",
-    "keywords": ["framework", "mvc", "template", "starter"],
-    "homepage": "https://github.com/carschrotter/MinimalusLayoutilus",
     "authors": [
         {
             "name": "Michael Hegenbarth (carschrotter)",
@@ -13,29 +11,31 @@
             "role": "Developer"
         }
     ],
-    "support": {
-        "issues": "https://github.com/carschrotter/MinimalusLayoutilus/issues",
-        "source": "https://github.com/carschrotter/MinimalusLayoutilus"
-    },
     "require": {
         "php": ">=5.4",
         "ext-json": "*",
         "ext-pdo": "*",
-        "mnhcc/ml-core": "^0.9",
-        "mnhcc/ml-bugcatcher": "^0.9",
-        "mnhcc/ml-mvc": "^0.9"
+        "mnhcc/ml-core": "*",
+        "mnhcc/ml-bugcatcher": "*",
+        "mnhcc/ml-mvc": "*"
     },
+    "repositories": [
+        {"type": "path", "url": "../ml-core"},
+        {"type": "path", "url": "../ml-bugcatcher"},
+        {"type": "path", "url": "../ml-mvc"}
+    ],
     "autoload": {
         "classmap": [
             "classes/"
         ]
     },
     "require-dev": {
+        "kint-php/kint": "4.x-dev",
         "phpunit/phpunit": "^5.7"
     },
     "scripts": {
         "test": "vendor/bin/phpunit"
     },
-    "minimum-stability": "stable",
+    "minimum-stability": "dev",
     "prefer-stable": true
 }

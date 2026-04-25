@@ -11,3 +11,9 @@
 
 # DDEV (generated files are handled by .ddev/.gitignore)
 /.ddev/config.local.yaml
+
+# AI Agentic helper
+/.claude
+
+composer.lock
+composer.local.lock

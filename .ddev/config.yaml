@@ -15,6 +15,7 @@ webimage_extra_packages:
     - php5.6-imap
 web_environment:
     - USE_ZEND_ALLOC=0
+    - COMPOSER=composer.local.json
 corepack_enable: false
 
 # Key features of DDEV's config.yaml:

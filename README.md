@@ -1,75 +1,42 @@
 # Minimalus Layoutilus
 
-A lightweight PHP MVC framework with a flexible templating system.
+Example application and project template for the [mnhcc/ml-*](https://packagist.org/packages/mnhcc/) PHP framework.
 
-## Features
+## Create a new project
 
-- MVC architecture with separated controller, view and template layers
-- Flexible namespace-based autoloading (`BootstrapHandler`)
-- Event system with `EventManager` and `EventParms`
-- Configurable bootstrapping and error handling
-- Installable via Composer, PHP >= 5.4
-- LGPL 2.1 licensed
+```bash
+composer create-project mnhcc/minimalus-layoutilus myproject
+cd myproject
+ddev start
+```
 
 ## Requirements
 
-- PHP >= 5.4
-- ext-json
-- ext-pdo
+- PHP ≥ 5.4, ext-json, ext-pdo
+- [DDEV](https://ddev.readthedocs.io) (local environment, PHP 5.6, MariaDB, nginx)
 
-## Installation
+## Framework packages
 
-```bash
-composer require mnhcc/minimalus-layoutilus
-```
+| Package | Description |
+|---|---|
+| [mnhcc/ml-core](https://packagist.org/packages/mnhcc/ml-core) | Autoloader, base classes, helpers |
+| [mnhcc/ml-bugcatcher](https://packagist.org/packages/mnhcc/ml-bugcatcher) | Error handler, events, exceptions |
+| [mnhcc/ml-mvc](https://packagist.org/packages/mnhcc/ml-mvc) | Router, Control, View, Template |
 
-## Quick Start
+## Development (working on the framework packages)
 
-```php
-<?php
-namespace myapp {
-    use mnhcc\ml\classes\Programm;
-    define('mnhcc\\ml\\INDEX', true);
-    require_once 'vendor/autoload.php';
-    require_once 'initial.php';
-    Programm::getInstance(Programm::DEFAULTINSTANCE)->runn();
-}
-```
-
-## Structure
-
-```
-classes/        PHP classes (.class.php)
-  Config/       Application config
-  Control/      Default controllers
-  Exception/    Exception classes
-  Records/      Record classes
-  Template/     Template implementations (Html, Json, Heap)
-interfaces/     PHP interfaces (.interface.php)
-traits/         PHP traits (.trait.php)
-library/        Bundled third-party libraries (epub, Benchmark)
-templates/      HTML template files
-```
-
-## Local Development (DDEV)
+When developing the `ml-*` packages alongside this project, use `composer.local.json`
+which resolves packages from sibling directories (`../ml-core` etc.) instead of Packagist:
 
 ```bash
-ddev start
-ddev composer install
+make dev-install   # installs from ../ml-core, ../ml-bugcatcher, ../ml-mvc
+make dev-update    # updates from sibling dirs
+make dev-test      # runs the test suite
 ```
 
-## Composer Dependencies
-
-| Package | Type | Purpose |
-|---|---|---|
-| `barbushin/php-imap` | require | IMAP support |
-| `raveren/kint` | require-dev | Debug output |
-| `firephp/firephp-core` | require-dev | FirePHP debugging |
+Without `make`, use `COMPOSER=composer.local.json composer install` directly.
+The lock file for local development is `composer.local.lock` (gitignored).
 
 ## License
 
-LGPL 2.1 — see [LICENSE](LICENSE)
-
-## Author
-
-Michael Hegenbarth (carschrotter) &lt;mnh@mn-hegenbarth.de&gt;
+[LGPL-2.1-or-later](https://www.gnu.org/licenses/old-licenses/lgpl-2.1.html) — Michael Hegenbarth (carschrotter)

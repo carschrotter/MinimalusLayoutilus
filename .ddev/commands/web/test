@@ -1,0 +1,6 @@
+#!/bin/bash
+## Description: Run PHPUnit test suite
+## Usage: test [flags]
+## Example: ddev test
+
+cd /var/www/html && vendor/bin/phpunit "$@"
