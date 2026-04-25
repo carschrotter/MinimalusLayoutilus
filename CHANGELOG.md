@@ -2,6 +2,29 @@
 
 All notable changes to this project will be documented in this file.
 
+## [0.9.3] - 2026-04-25
+
+### Changed
+- Framework classes extracted into independent Composer packages (`mnhcc/ml-core`, `mnhcc/ml-bugcatcher`, `mnhcc/ml-mvc`); project now consumes them as dependencies
+- `initial.php` slimmed to project-specific bootstrap — framework setup delegated to `BootstrapHandler::initial()`
+- `ext-pdo` and `ext-imap` moved from `require` to `suggest`; neither is mandatory for all use cases
+- Project description corrected: "example application" replaced by actual template-engine philosophy
+- `index.php`: namespace `mnhcc\example` → `mnhcc\minimaluslayoutilus`
+
+### Added
+- Packagist deployment: `composer.local.json` (dev, path repos to sibling `../ml-*`) / `composer.json` (dist, auto-generated)
+- Pre-commit Git hook (`.githooks/pre-commit`) reads current tag from each sibling repo and writes the matching `^major.minor` constraint into `composer.json`
+- DDEV: `COMPOSER=composer.local.json` set as `web_environment` so `ddev composer` resolves local packages automatically; `ddev test` custom command; `post-start` hook activates `.githooks` via `git config core.hooksPath`
+- DDEV opt-in imap: `.ddev/config.imap.yaml.dist` → copy to `config.imap.yaml` + `ddev restart`
+- GitHub Actions CI: PHP 5.6 / 7.0 / 7.1 matrix; sibling-repo checkout; path repos injected via `composer config`
+- Root `phpunit.xml.dist` aggregates all three package test suites from `vendor/mnhcc/*/tests/Unit`
+
+### Fixed
+- `templates/error/template.default.php`: 404 page evaluated `$_GET['error']` instead of the in-scope `$code` variable — caused blank error body for all routing errors
+- Autoloader no longer required manually; Composer autoload handles `BootstrapHandler` discovery
+
+---
+
 ## [0.9.2] - 2026-04-19
 
 ### Fixed
