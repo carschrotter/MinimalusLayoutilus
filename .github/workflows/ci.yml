@@ -38,10 +38,19 @@ jobs:
           php-version: ${{ matrix.php }}
           coverage: none
 
+      - name: Inject path repositories for checked-out packages
+        working-directory: MinimalusLayoutilus
+        run: |
+          composer config repositories.ml-core      '{"type":"path","url":"../ml-core"}'
+          composer config repositories.ml-bugcatcher '{"type":"path","url":"../ml-bugcatcher"}'
+          composer config repositories.ml-mvc        '{"type":"path","url":"../ml-mvc"}'
+          composer config minimum-stability dev
+          composer config prefer-stable true
+
       - name: Install dependencies
         working-directory: MinimalusLayoutilus
-        run: COMPOSER=composer.local.json composer install --no-progress --prefer-dist
+        run: composer install --no-progress --prefer-dist
 
       - name: Run tests
         working-directory: MinimalusLayoutilus
-        run: COMPOSER=composer.local.json vendor/bin/phpunit
+        run: vendor/bin/phpunit
