@@ -1,0 +1,59 @@
+#!/usr/bin/env bash
+# Generates composer.json from composer.local.json.
+# Version constraints are derived from the current git tag of each sibling repo.
+# Example: ml-mvc at v1.1.4 → "mnhcc/ml-mvc": "^1.1"
+
+set -euo pipefail
+
+REPO_ROOT="$(git rev-parse --show-toplevel)"
+
+# Returns ^major.minor from the latest tag, or * if the repo/tag is unavailable.
+get_constraint() {
+    local dir="$REPO_ROOT/../$1"
+    if [ ! -d "$dir" ]; then
+        echo "*"
+        return
+    fi
+    local tag
+    tag=$(git -C "$dir" describe --tags --abbrev=0 2>/dev/null || echo "")
+    if [[ "$tag" =~ ^v?([0-9]+)\.([0-9]+) ]]; then
+        echo "^${BASH_REMATCH[1]}.${BASH_REMATCH[2]}"
+    else
+        echo "*"
+    fi
+}
+
+CORE_VER=$(get_constraint "ml-core")
+BUGCATCHER_VER=$(get_constraint "ml-bugcatcher")
+MVC_VER=$(get_constraint "ml-mvc")
+
+php -r "
+    \$local = json_decode(file_get_contents('$REPO_ROOT/composer.local.json'), true);
+
+    unset(\$local['repositories']);
+    \$local['minimum-stability'] = 'stable';
+    \$local['prefer-stable']     = true;
+
+    \$local['require']['mnhcc/ml-core']       = '$CORE_VER';
+    \$local['require']['mnhcc/ml-bugcatcher'] = '$BUGCATCHER_VER';
+    \$local['require']['mnhcc/ml-mvc']        = '$MVC_VER';
+
+    if (isset(\$local['require-dev']['kint-php/kint'])) {
+        \$local['require-dev']['kint-php/kint'] = '^4.0';
+    }
+
+    \$local['keywords'] = ['framework', 'mvc', 'template', 'starter', 'php54'];
+    \$local['homepage'] = 'https://github.com/carschrotter/MinimalusLayoutilus';
+    \$local['support']  = [
+        'issues' => 'https://github.com/carschrotter/MinimalusLayoutilus/issues',
+        'source'  => 'https://github.com/carschrotter/MinimalusLayoutilus',
+    ];
+
+    file_put_contents(
+        '$REPO_ROOT/composer.json',
+        json_encode(\$local, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL
+    );
+"
+
+git add "$REPO_ROOT/composer.json"
+echo "composer.json generated (ml-core=$CORE_VER, ml-bugcatcher=$BUGCATCHER_VER, ml-mvc=$MVC_VER)"

@@ -17,6 +17,9 @@ web_environment:
     - USE_ZEND_ALLOC=0
     - COMPOSER=composer.local.json
 corepack_enable: false
+hooks:
+  post-start:
+    - exec-host: git config core.hooksPath .githooks
 
 # Key features of DDEV's config.yaml:
 
